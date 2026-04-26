@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const pool = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const usuarioRoutes = require('./routes/usuarioRoutes');
 require('dotenv').config();
 
 const app = express();
@@ -31,3 +32,4 @@ app.get('/db-test', async (req, res) => {
 module.exports = app;
 
 app.use('/api/auth', authRoutes);
+app.use('/api/usuarios', usuarioRoutes);
