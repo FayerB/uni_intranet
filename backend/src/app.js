@@ -3,6 +3,7 @@ const cors = require('cors');
 
 const authRoutes = require('./modules/auth/auth.routes');
 const usuariosRoutes = require('./modules/usuarios/usuarios.routes');
+const noticiasRoutes = require('./modules/noticias/noticias.routes');
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuariosRoutes);
+app.use('/api/noticias', noticiasRoutes);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
