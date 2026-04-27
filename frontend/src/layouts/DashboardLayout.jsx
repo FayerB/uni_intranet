@@ -7,7 +7,7 @@ import Header from '../components/layout/Header';
 export default function DashboardLayout() {
   const { user } = useStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const hasSession = Boolean(user || localStorage.getItem('token'));
+  const hasSession = Boolean(user && localStorage.getItem('token'));
 
   if (!hasSession) {
     return <Navigate to="/" replace />;

@@ -1,39 +1,33 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  Users,
-  BookOpen,
-  UserPlus,
-  GraduationCap,
-  CheckSquare,
-  Calendar,
-  Newspaper,
-  BarChart3,
-  User,
-  Building2,
-  X,
-  Sun,
-  Moon,
-  LogOut
+  LayoutDashboard, Users, BookOpen, UserPlus, GraduationCap,
+  CheckSquare, Calendar, Newspaper, BarChart3, User, Building2,
+  X, Sun, Moon, LogOut
 } from 'lucide-react';
 import { useStore } from '../../context/useStore';
 
+// roles: undefined = todos, array = solo esos roles
 const NAV_ITEMS = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/usuarios', label: 'Usuarios', icon: Users },
-  { path: '/cursos', label: 'Cursos', icon: BookOpen },
-  { path: '/matriculas', label: 'Matrículas', icon: UserPlus },
-  { path: '/notas', label: 'Notas', icon: GraduationCap },
-  { path: '/asistencia', label: 'Asistencia', icon: CheckSquare },
-  { path: '/horarios', label: 'Horarios', icon: Calendar },
-  { path: '/noticias', label: 'Noticias', icon: Newspaper },
-  { path: '/reportes', label: 'Reportes', icon: BarChart3 },
-  { path: '/perfil', label: 'Mi Perfil', icon: User },
+  { path: '/dashboard',  label: 'Dashboard',   icon: LayoutDashboard },
+  { path: '/usuarios',   label: 'Usuarios',     icon: Users,         roles: ['admin'] },
+  { path: '/cursos',     label: 'Cursos',       icon: BookOpen,      roles: ['admin', 'docente'] },
+  { path: '/matriculas', label: 'Matrículas',   icon: UserPlus,      roles: ['admin', 'estudiante'] },
+  { path: '/notas',      label: 'Notas',        icon: GraduationCap },
+  { path: '/asistencia', label: 'Asistencia',   icon: CheckSquare },
+  { path: '/horarios',   label: 'Horarios',     icon: Calendar },
+  { path: '/noticias',   label: 'Noticias',     icon: Newspaper },
+  { path: '/reportes',   label: 'Reportes',     icon: BarChart3,     roles: ['admin'] },
+  { path: '/perfil',     label: 'Mi Perfil',    icon: User },
 ];
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
-  const { theme, toggleTheme, setUser } = useStore();
+  const { user, theme, toggleTheme, setUser } = useStore();
   const navigate = useNavigate();
+  const role = user?.role;
+
+  const visibleItems = NAV_ITEMS.filter(
+    (item) => !item.roles || item.roles.includes(role)
+  );
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -62,8 +56,26 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </button>
       </div>
 
+      {/* Role badge */}
+      {user && (
+        <div className="px-6 py-3 border-b border-gray-100 dark:border-gray-700">
+          <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+            Conectado como
+          </p>
+          <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">
+            {user.name}
+          </p>
+          <span className={`inline-block mt-1 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full
+            ${role === 'admin'      ? 'bg-primary/10 text-primary' :
+              role === 'docente'    ? 'bg-secondary/10 text-secondary' :
+              'bg-success/10 text-success'}`}>
+            {role}
+          </span>
+        </div>
+      )}
+
       <nav className="flex-1 overflow-y-auto p-4 space-y-1">
-        {NAV_ITEMS.map((item) => (
+        {visibleItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
@@ -91,9 +103,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             {theme === 'light' ? <Sun size={20} className="mr-3" /> : <Moon size={20} className="mr-3" />}
             <span>Apariencia</span>
           </div>
-          <span className="text-xs uppercase tracking-wider opacity-60">
-            {theme}
-          </span>
+          <span className="text-xs uppercase tracking-wider opacity-60">{theme}</span>
         </button>
         <button
           onClick={handleLogout}
@@ -106,6 +116,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       </div>
     </aside>
   );
-}
+};
 
 export default Sidebar;

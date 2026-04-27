@@ -3,7 +3,7 @@ import { useStore } from '../context/useStore';
 
 export default function AuthLayout() {
   const { user } = useStore();
-  const hasSession = Boolean(user || localStorage.getItem('token'));
+  const hasSession = Boolean(user && localStorage.getItem('token'));
 
   if (hasSession) {
     return <Navigate to="/dashboard" replace />;

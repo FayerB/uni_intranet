@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+import api from '../../api';
 
 export default function LoginPage() {
   const { setUser } = useStore();
@@ -23,28 +24,22 @@ export default function LoginPage() {
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      const mockUser = {
-        id: 1,
-        name: 'Administrador Demo',
+      const res = await api.post('/auth/login', {
         email: data.email,
-        role: 'admin',
-      };
+        password: data.password,
+      });
 
-      localStorage.setItem('token', 'mock-jwt-token');
-      setUser(mockUser);
+      localStorage.setItem('token', res.data.token);
+      setUser(res.data.user);
       navigate('/dashboard');
-    } catch {
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Error al conectar con el servidor.';
       Swal.fire({
         icon: 'error',
         title: 'Error de autenticación',
-        text: 'Credenciales inválidas. Por favor, intente nuevamente.',
+        text: msg,
         confirmButtonColor: '#1e3a8a',
-        customClass: {
-          popup: 'rounded-2xl',
-        }
+        customClass: { popup: 'rounded-2xl' },
       });
     } finally {
       setIsLoading(false);
@@ -55,13 +50,12 @@ export default function LoginPage() {
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Left side - Presentation (Hidden on mobile) */}
       <div className="hidden lg:flex lg:w-1/2 bg-primary relative overflow-hidden flex-col justify-center items-center text-white p-12">
-        {/* Abstract background shapes */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
           <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-secondary blur-3xl" />
           <div className="absolute top-[60%] -right-[10%] w-[60%] h-[60%] rounded-full bg-primary-400 blur-3xl" />
         </div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
@@ -84,13 +78,12 @@ export default function LoginPage() {
 
       {/* Right side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
           className="w-full max-w-md"
         >
-          {/* Logo on mobile */}
           <div className="lg:hidden flex items-center space-x-3 mb-10">
             <div className="p-2 bg-primary rounded-xl">
               <BookOpen size={24} className="text-white" />
@@ -115,10 +108,7 @@ export default function LoginPage() {
               <Input
                 {...register('email', {
                   required: 'El correo es requerido',
-                  pattern: {
-                    value: /^\S+@\S+\.\S+$/i,
-                    message: 'Correo electrónico inválido',
-                  },
+                  pattern: { value: /^\S+@\S+\.\S+$/i, message: 'Correo electrónico inválido' },
                 })}
                 type="email"
                 placeholder="usuario@universidad.edu"
@@ -135,10 +125,7 @@ export default function LoginPage() {
                 <Input
                   {...register('password', {
                     required: 'La contraseña es requerida',
-                    minLength: {
-                      value: 6,
-                      message: 'Mínimo 6 caracteres',
-                    },
+                    minLength: { value: 6, message: 'Mínimo 6 caracteres' },
                   })}
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
@@ -188,18 +175,14 @@ export default function LoginPage() {
               </button>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full text-base py-6"
-              isLoading={isLoading}
-            >
+            <Button type="submit" className="w-full text-base py-6" isLoading={isLoading}>
               Ingresar al portal
             </Button>
           </form>
 
           <div className="mt-10 text-center text-sm text-gray-500 dark:text-gray-400">
             ¿Problemas para ingresar?{' '}
-            <button 
+            <button
               type="button"
               onClick={() => {
                 Swal.fire({
