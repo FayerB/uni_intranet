@@ -6,11 +6,12 @@ import { Card, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import Swal from 'sweetalert2';
 import api from '../../api';
-import { useStore } from '../../context/useStore';
+import { fetchSafe } from '../../api/fetchSafe';
+import { MOCK } from '../../api/mock';
+import { useRole } from '../../hooks/useRole';
 
 export default function AsistenciaPage() {
-  const { user } = useStore();
-  const isStudent = user?.role === 'estudiante';
+  const { isEstudiante: isStudent, isDocente } = useRole();
   const today = new Date().toISOString().split('T')[0];
 
   const [courses, setCourses]               = useState([]);
@@ -22,37 +23,33 @@ export default function AsistenciaPage() {
 
   useEffect(() => {
     const loadCourses = async () => {
-      try {
-        if (isStudent) {
-          const { data } = await api.get('/matriculas');
-          setCourses(data.map(m => ({ id: m.curso_id, name: m.curso })));
+      if (isStudent) {
+        const data = await fetchSafe(api.get('/matriculas'), MOCK.matriculas);
+        setCourses(data.map(m => ({ id: m.curso_id, name: m.curso })));
+      } else {
+        const data = await fetchSafe(api.get('/cursos'), MOCK.cursos);
+        if (isDocente) {
+          // Si el docente no tiene cursos asignados aún, mostrar todos (backend incompleto)
+          const myCourses = data.filter(c => c.docente_id != null);
+          setCourses((myCourses.length > 0 ? myCourses : data).map(c => ({ id: c.id, name: c.name })));
         } else {
-          const { data } = await api.get('/cursos');
-          const filtered = user?.role === 'docente'
-            ? data.filter(c => c.docente_id === user.id)
-            : data;
-          setCourses(filtered.map(c => ({ id: c.id, name: c.name })));
+          setCourses(data.map(c => ({ id: c.id, name: c.name })));
         }
-      } catch (e) {
-        console.error('Error cargando cursos:', e);
       }
     };
     loadCourses();
-  }, [isStudent, user]);
+  }, [isStudent, isDocente]);
 
   useEffect(() => {
     if (!selectedCourse) { setAlumnos([]); return; }
     const loadAttendance = async () => {
       setIsLoading(true);
-      try {
-        const { data } = await api.get(`/asistencias?curso_id=${selectedCourse}&fecha=${currentDate}`);
-        setAlumnos(data.map(a => ({ ...a, status: a.estado })));
-      } catch (e) {
-        console.error('Error cargando asistencia:', e);
-        setAlumnos([]);
-      } finally {
-        setIsLoading(false);
-      }
+      const data = await fetchSafe(
+        api.get(`/asistencias?curso_id=${selectedCourse}&fecha=${currentDate}`),
+        MOCK.asistencias
+      );
+      setAlumnos(data.map(a => ({ ...a, status: a.estado })));
+      setIsLoading(false);
     };
     loadAttendance();
   }, [selectedCourse, currentDate]);

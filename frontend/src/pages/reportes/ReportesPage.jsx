@@ -7,6 +7,8 @@ import { Table, TableHeader, TableRow, TableHead, TableCell } from '../../compon
 import { Badge } from '../../components/ui/Badge';
 import Swal from 'sweetalert2';
 import api from '../../api';
+import { fetchSafe } from '../../api/fetchSafe';
+import { MOCK } from '../../api/mock';
 
 const REPORT_TYPES = ['Usuarios por Rol', 'Noticias por Categoría'];
 
@@ -16,11 +18,8 @@ export default function ReportesPage() {
   const [tipoReporte, setTipoReporte] = useState('Usuarios por Rol');
 
   useEffect(() => {
-    api.get('/reportes/resumen')
-      .then((res) => setResumen(res.data))
-      .catch(() => {
-        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cargar el reporte.', confirmButtonColor: '#1e3a8a' });
-      })
+    fetchSafe(api.get('/reportes/resumen'), MOCK.reportesResumen)
+      .then(setResumen)
       .finally(() => setIsLoading(false));
   }, []);
 

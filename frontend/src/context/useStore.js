@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 export const useStore = create(
   persist(
@@ -20,6 +20,10 @@ export const useStore = create(
     }),
     {
       name: 'intranet-store',
+      // sessionStorage es por-pestaña: evita que cerrar una pestaña
+      // dispare un storage event que cierre la sesión en otras pestañas.
+      // Al duplicar una pestaña el navegador copia el sessionStorage → sesión activa en ambas.
+      storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({ user: state.user, theme: state.theme }),
     }
   )

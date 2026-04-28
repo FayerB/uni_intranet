@@ -7,6 +7,8 @@ import { Card } from '../../components/ui/Card';
 import { Statistic } from '../../components/ui/Statistic';
 import { ActivityFeed } from '../../components/ui/ActivityFeed';
 import api from '../../api';
+import { fetchSafe } from '../../api/fetchSafe';
+import { MOCK } from '../../api/mock';
 
 export default function DashboardPage() {
   const { user } = useStore();
@@ -15,9 +17,8 @@ export default function DashboardPage() {
   const [chartReady, setChartReady] = useState(false);
 
   useEffect(() => {
-    api.get('/dashboard/stats')
-      .then((res) => setStats(res.data))
-      .catch(() => {})
+    fetchSafe(api.get('/dashboard/stats'), MOCK.dashboardStats)
+      .then((data) => setStats(data))
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -105,7 +106,7 @@ export default function DashboardPage() {
               </h3>
               <div className="h-72" translate="no">
                 {chartReady && (
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height={288}>
                     <AreaChart
                       data={stats.chartData ?? []}
                       margin={{ top: 10, right: 10, left: -20, bottom: 0 }}

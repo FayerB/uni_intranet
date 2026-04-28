@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, Outlet, useRouteError, useNavigate } fro
 import { useStore } from '../context/useStore';
 import AuthLayout from '../layouts/AuthLayout';
 import DashboardLayout from '../layouts/DashboardLayout';
+import RoleGuard from '../components/auth/RoleGuard';
 
 import LoginPage from '../pages/auth/LoginPage';
 import DashboardPage from '../pages/dashboard/DashboardPage';
@@ -14,12 +15,23 @@ import AsistenciaPage from '../pages/asistencia/AsistenciaPage';
 import HorariosPage from '../pages/horarios/HorariosPage';
 import NoticiasPage from '../pages/noticias/NoticiasPage';
 import ReportesPage from '../pages/reportes/ReportesPage';
+import ClasesVirtualesPage from '../pages/clases/ClasesVirtualesPage';
+import MaterialCursoPage from '../pages/material/MaterialCursoPage';
+import HistorialPage from '../pages/historial/HistorialPage';
 
 function PrivateRoute() {
   const { user } = useStore();
   const token = localStorage.getItem('token');
   return user && token ? <Outlet /> : <Navigate to="/" replace />;
 }
+
+const ROUTE_ROLES = {
+  usuarios:   ['admin'],
+  cursos:     ['admin', 'docente'],
+  matriculas: ['admin', 'estudiante'],
+  reportes:   ['admin'],
+  historial:  ['estudiante', 'admin'],
+};
 
 function PageError() {
   const error = useRouteError();
@@ -70,14 +82,52 @@ export const router = createBrowserRouter([
         children: [
           { path: 'dashboard',  element: <DashboardPage /> },
           { path: 'perfil',     element: <PerfilPage /> },
-          { path: 'usuarios',   element: <UsuariosPage /> },
-          { path: 'cursos',     element: <CursosPage /> },
-          { path: 'matriculas', element: <MatriculasPage /> },
           { path: 'notas',      element: <NotasPage /> },
           { path: 'asistencia', element: <AsistenciaPage /> },
           { path: 'horarios',   element: <HorariosPage /> },
           { path: 'noticias',   element: <NoticiasPage /> },
-          { path: 'reportes',   element: <ReportesPage /> },
+          { path: 'clases',    element: <ClasesVirtualesPage /> },
+          { path: 'material',  element: <MaterialCursoPage /> },
+          {
+            path: 'historial',
+            element: (
+              <RoleGuard allowed={ROUTE_ROLES.historial}>
+                <HistorialPage />
+              </RoleGuard>
+            ),
+          },
+          {
+            path: 'usuarios',
+            element: (
+              <RoleGuard allowed={ROUTE_ROLES.usuarios}>
+                <UsuariosPage />
+              </RoleGuard>
+            ),
+          },
+          {
+            path: 'cursos',
+            element: (
+              <RoleGuard allowed={ROUTE_ROLES.cursos}>
+                <CursosPage />
+              </RoleGuard>
+            ),
+          },
+          {
+            path: 'matriculas',
+            element: (
+              <RoleGuard allowed={ROUTE_ROLES.matriculas}>
+                <MatriculasPage />
+              </RoleGuard>
+            ),
+          },
+          {
+            path: 'reportes',
+            element: (
+              <RoleGuard allowed={ROUTE_ROLES.reportes}>
+                <ReportesPage />
+              </RoleGuard>
+            ),
+          },
         ],
       },
     ],

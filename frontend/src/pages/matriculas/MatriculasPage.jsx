@@ -7,6 +7,9 @@ import { Badge } from '../../components/ui/Badge';
 import { Table, TableHeader, TableRow, TableHead, TableCell } from '../../components/tables/Table';
 import Swal from 'sweetalert2';
 import api from '../../api';
+import { fetchSafe } from '../../api/fetchSafe';
+import { MOCK } from '../../api/mock';
+import { useRole } from '../../hooks/useRole';
 import { useStore } from '../../context/useStore';
 
 const STEPS = [
@@ -16,8 +19,8 @@ const STEPS = [
 ];
 
 export default function MatriculasPage() {
+  const { isAdmin } = useRole();
   const { user } = useStore();
-  const isAdmin = user?.role === 'admin';
 
   const [currentStep, setCurrentStep]       = useState(1);
   const [cursos, setCursos]                 = useState([]);
@@ -29,10 +32,14 @@ export default function MatriculasPage() {
 
   useEffect(() => {
     setIsLoadingCursos(true);
-    api.get('/cursos').then((res) => setCursos(res.data)).finally(() => setIsLoadingCursos(false));
+    fetchSafe(api.get('/cursos'), MOCK.cursos)
+      .then(setCursos)
+      .finally(() => setIsLoadingCursos(false));
 
     setIsLoadingMat(true);
-    api.get('/matriculas').then((res) => setMisMatriculas(res.data)).finally(() => setIsLoadingMat(false));
+    fetchSafe(api.get('/matriculas'), MOCK.matriculas)
+      .then(setMisMatriculas)
+      .finally(() => setIsLoadingMat(false));
   }, []);
 
   const enrolledCursoIds = new Set(misMatriculas.map((m) => m.curso_id));
@@ -74,7 +81,7 @@ export default function MatriculasPage() {
       }).then(() => {
         setCurrentStep(1);
         setSelectedIds([]);
-        api.get('/matriculas').then((r) => setMisMatriculas(r.data));
+        fetchSafe(api.get('/matriculas'), MOCK.matriculas).then(setMisMatriculas);
       });
     } catch (err) {
       Swal.fire({ icon: 'error', title: 'Error', text: err.response?.data?.message || 'No se pudo completar la matrícula.', confirmButtonColor: '#1e3a8a' });

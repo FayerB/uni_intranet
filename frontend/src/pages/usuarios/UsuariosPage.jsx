@@ -9,7 +9,7 @@ import { Modal } from '../../components/ui/Modal';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import api from '../../api';
-import { useStore } from '../../context/useStore';
+import { useRole } from '../../hooks/useRole';
 
 const ROLES = ['Todos', 'Estudiante', 'Docente', 'Admin'];
 
@@ -20,8 +20,7 @@ const roleBadgeMap = {
 };
 
 export default function UsuariosPage() {
-  const { user: currentUser } = useStore();
-  const isAdmin = currentUser?.role === 'admin';
+  const { isAdmin } = useRole();
 
   const [usuarios, setUsuarios]     = useState([]);
   const [total, setTotal]           = useState(0);

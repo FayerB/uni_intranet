@@ -13,8 +13,12 @@ const asistenciasRoutes = require('./modules/asistencias/asistencias.routes');
 
 const app = express();
 
+const ALLOWED_ORIGINS = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+  : ['http://localhost:5173', 'http://localhost:5174'];
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: ALLOWED_ORIGINS,
   credentials: true,
 }));
 

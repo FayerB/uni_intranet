@@ -10,7 +10,9 @@ import { Table, TableHeader, TableRow, TableHead, TableCell } from '../../compon
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import api from '../../api';
-import { useStore } from '../../context/useStore';
+import { fetchSafe } from '../../api/fetchSafe';
+import { MOCK } from '../../api/mock';
+import { useRole } from '../../hooks/useRole';
 
 const TIPOS = ['Obligatorio', 'Electivo', 'Especialidad'];
 const CICLOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
@@ -18,9 +20,9 @@ const CICLOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
 const typeBadge = (t) => t === 'Obligatorio' ? 'primary' : t === 'Electivo' ? 'warning' : 'secondary';
 
 export default function CursosPage() {
-  const { user } = useStore();
-  const canWrite = user?.role === 'admin' || user?.role === 'docente';
-  const canDelete = user?.role === 'admin';
+  const { isAdmin, isDocente } = useRole();
+  const canWrite  = isAdmin || isDocente;
+  const canDelete = isAdmin;
 
   const [cursos, setCursos]           = useState([]);
   const [isLoading, setIsLoading]     = useState(true);
@@ -36,17 +38,12 @@ export default function CursosPage() {
 
   const fetchCursos = useCallback(async () => {
     setIsLoading(true);
-    try {
-      const params = {};
-      if (searchTerm) params.search = searchTerm;
-      if (cicloFilter !== 'Todos') params.ciclo = cicloFilter;
-      const res = await api.get('/cursos', { params });
-      setCursos(res.data);
-    } catch {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los cursos.', confirmButtonColor: '#1e3a8a' });
-    } finally {
-      setIsLoading(false);
-    }
+    const params = {};
+    if (searchTerm) params.search = searchTerm;
+    if (cicloFilter !== 'Todos') params.ciclo = cicloFilter;
+    const data = await fetchSafe(api.get('/cursos', { params }), MOCK.cursos);
+    setCursos(data);
+    setIsLoading(false);
   }, [searchTerm, cicloFilter]);
 
   useEffect(() => { fetchCursos(); }, [fetchCursos]);
