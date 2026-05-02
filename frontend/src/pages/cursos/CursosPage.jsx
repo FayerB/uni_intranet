@@ -247,7 +247,7 @@ export default function CursosPage() {
                 </div>
               </div>
               <div className="p-6 overflow-y-auto space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-2xl flex flex-col items-center">
                     <BookOpen className="text-primary mb-2" size={24} />
                     <span className="text-sm text-gray-500">Créditos</span>
@@ -296,7 +296,7 @@ export default function CursosPage() {
       {/* Modal crear/editar */}
       <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title={editingCurso ? 'Editar Curso' : 'Nuevo Curso'}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium mb-1 block">Código</label>
               <Input {...register('codigo', { required: 'Requerido' })} placeholder="CS101" error={errors.codigo} />
@@ -310,7 +310,7 @@ export default function CursosPage() {
             <label className="text-sm font-medium mb-1 block">Descripción</label>
             <textarea {...register('descripcion')} rows={2} placeholder="Descripción del curso..." className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="text-sm font-medium mb-1 block">Créditos</label>
               <Input {...register('creditos', { valueAsNumber: true })} type="number" min={1} max={10} />

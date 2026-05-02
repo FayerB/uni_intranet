@@ -98,7 +98,7 @@ export default function NoticiasPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
           <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Noticias y Avisos</h1>
-          <p className="text-gray-500 mt-2 text-lg">Mantente informado sobre lo que ocurre en tu universidad.</p>
+          <p className="text-gray-500 mt-2 text-lg">Mantente informado sobre lo que ocurre en tu colegio.</p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-wrap items-center gap-2">

@@ -1,23 +1,32 @@
 import api from './index';
-import { fetchSafe } from './fetchSafe';
-import { MOCK } from './mock';
 
-// GET  /clases-virtuales         → lista (acepta ?estado=&curso_id=)
-// POST /clases-virtuales         → crear
-// PUT  /clases-virtuales/:id     → editar
-// DELETE /clases-virtuales/:id   → eliminar / cancelar
-// TODO: implementar endpoints en el backend
+// Adapta el formato del backend (/api/clases) al formato que usa ClasesVirtualesPage
+const adapt = (c) => ({
+  ...c,
+  enlace:     c.url_reunion,    // la página usa .enlace
+  fecha_hora: c.fecha_inicio,   // la página usa .fecha_hora
+  docente:    c.creado_por,
+});
 
 export const clasesAPI = {
-  getAll: (params = {}) =>
-    fetchSafe(api.get('/clases-virtuales', { params }), MOCK.clasesVirtuales),
+  getAll: async (params = {}) => {
+    const { data } = await api.get('/clases', { params });
+    return Array.isArray(data) ? data.map(adapt) : [];
+  },
 
   create: (data) =>
-    api.post('/clases-virtuales', data),
+    api.post('/clases', {
+      ...data,
+      url_reunion:  data.enlace,      // mapeo inverso
+      fecha_inicio: data.fecha_hora,
+    }),
 
   update: (id, data) =>
-    api.put(`/clases-virtuales/${id}`, data),
+    api.put(`/clases/${id}`, {
+      ...data,
+      url_reunion:  data.enlace,
+      fecha_inicio: data.fecha_hora,
+    }),
 
-  remove: (id) =>
-    api.delete(`/clases-virtuales/${id}`),
+  remove: (id) => api.delete(`/clases/${id}`),
 };

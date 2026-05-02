@@ -32,7 +32,7 @@ const PerfilPage = () => {
                 <Mail size={14} className="mr-2" />
                 Correo
               </p>
-              <p className="font-semibold text-gray-900 dark:text-white">{user?.email || 'admin@universidad.edu'}</p>
+              <p className="font-semibold text-gray-900 dark:text-white">{user?.email || 'admin@colegio.edu'}</p>
             </div>
             <div className="p-4 rounded-2xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 md:col-span-2">
               <p className="text-xs uppercase tracking-wide text-gray-500 mb-2 flex items-center">

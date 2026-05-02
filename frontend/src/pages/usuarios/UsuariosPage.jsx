@@ -11,12 +11,13 @@ import Swal from 'sweetalert2';
 import api from '../../api';
 import { useRole } from '../../hooks/useRole';
 
-const ROLES = ['Todos', 'Estudiante', 'Docente', 'Admin'];
+const ROLES = ['Todos', 'Estudiante', 'Docente', 'Admin', 'Padre'];
 
 const roleBadgeMap = {
   admin:      'primary',
   docente:    'secondary',
   estudiante: 'success',
+  padre:      'warning',
 };
 
 export default function UsuariosPage() {
@@ -269,7 +270,7 @@ export default function UsuariosPage() {
             <Input
               {...register('email', { required: 'Requerido' })}
               type="email"
-              placeholder="juan@universidad.edu"
+              placeholder="juan@colegio.edu"
               error={errors.email}
             />
           </div>
@@ -295,6 +296,7 @@ export default function UsuariosPage() {
               >
                 <option value="estudiante">Estudiante</option>
                 <option value="docente">Docente</option>
+                <option value="padre">Padre</option>
                 <option value="admin">Admin</option>
               </select>
             </div>

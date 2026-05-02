@@ -21,4 +21,12 @@ const upsertMany = async (req, res) => {
   } catch (e) { res.status(500).json({ message: e.message }); }
 };
 
-module.exports = { getByCourse, upsertMany };
+const getHistorial = async (req, res) => {
+  try {
+    // Sin param → usa el usuario logueado (cualquier rol puede ver su propio historial)
+    const id = req.params.estudianteId || req.user.id;
+    res.json(await notasService.getHistorial(id));
+  } catch (e) { res.status(500).json({ message: e.message }); }
+};
+
+module.exports = { getByCourse, upsertMany, getHistorial };

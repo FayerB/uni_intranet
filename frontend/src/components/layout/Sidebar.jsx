@@ -2,26 +2,31 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, BookOpen, UserPlus, GraduationCap,
   CheckSquare, Calendar, Newspaper, BarChart3, User, Building2,
-  Video, BookMarked, ScrollText, X, Sun, Moon, LogOut
+  Video, BookMarked, ScrollText, X, Sun, Moon, LogOut,
+  ClipboardList, Library, CalendarDays, MessageSquare, Bell,
+  HeadphonesIcon, CreditCard, Settings
 } from 'lucide-react';
 import { useStore } from '../../context/useStore';
 import { useRole } from '../../hooks/useRole';
 
 // roles: undefined = todos los roles autenticados, array = solo esos roles
 const NAV_ITEMS = [
-  { path: '/dashboard',  label: 'Dashboard',  icon: LayoutDashboard },
-  { path: '/usuarios',   label: 'Usuarios',   icon: Users,         roles: ['admin'] },
-  { path: '/cursos',     label: 'Cursos',     icon: BookOpen,      roles: ['admin', 'docente'] },
-  { path: '/matriculas', label: 'Matrículas', icon: UserPlus,      roles: ['admin', 'estudiante'] },
-  { path: '/notas',      label: 'Notas',      icon: GraduationCap },
-  { path: '/asistencia', label: 'Asistencia',       icon: CheckSquare },
-  { path: '/clases',    label: 'Clases Virtuales', icon: Video },
-  { path: '/material',  label: 'Material de Curso', icon: BookMarked },
-  { path: '/historial', label: 'Historial',          icon: ScrollText, roles: ['estudiante', 'admin'] },
-  { path: '/horarios',  label: 'Horarios',            icon: Calendar },
-  { path: '/noticias',   label: 'Noticias',   icon: Newspaper },
-  { path: '/reportes',   label: 'Reportes',   icon: BarChart3,     roles: ['admin'] },
-  { path: '/perfil',     label: 'Mi Perfil',  icon: User },
+  { path: '/dashboard',  label: 'Dashboard',         icon: LayoutDashboard },
+  { path: '/usuarios',   label: 'Usuarios',           icon: Users,          roles: ['admin'] },
+  { path: '/cursos',     label: 'Cursos',             icon: BookOpen,       roles: ['admin', 'docente'] },
+  { path: '/matriculas', label: 'Matrículas',         icon: UserPlus,       roles: ['admin', 'estudiante'] },
+  { path: '/notas',      label: 'Notas',              icon: GraduationCap },
+  { path: '/asistencia', label: 'Asistencia',         icon: CheckSquare },
+  { path: '/clases',     label: 'Clases Virtuales',   icon: Video },
+  { path: '/material',   label: 'Material de Curso',  icon: BookMarked },
+  { path: '/tareas',     label: 'Tareas',             icon: ClipboardList },
+  { path: '/recursos',   label: 'Recursos',           icon: Library },
+  { path: '/calendario', label: 'Calendario',         icon: CalendarDays },
+  { path: '/historial',  label: 'Historial',          icon: ScrollText,     roles: ['estudiante', 'admin'] },
+  { path: '/horarios',   label: 'Horarios',           icon: Calendar },
+  { path: '/noticias',   label: 'Noticias',           icon: Newspaper },
+  { path: '/reportes',   label: 'Reportes',           icon: BarChart3,      roles: ['admin'] },
+  { path: '/perfil',     label: 'Mi Perfil',          icon: User },
 ];
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -50,7 +55,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           <div className="p-1.5 bg-primary/10 rounded-lg">
             <Building2 size={24} className="text-primary" />
           </div>
-          <span>UniIntranet</span>
+          <span>EduColegio</span>
         </div>
         <button
           onClick={() => setIsOpen(false)}
