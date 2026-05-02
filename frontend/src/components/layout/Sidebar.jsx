@@ -23,10 +23,14 @@ const NAV_ITEMS = [
   { path: '/recursos',   label: 'Recursos',           icon: Library },
   { path: '/calendario', label: 'Calendario',         icon: CalendarDays },
   { path: '/historial',  label: 'Historial',          icon: ScrollText,     roles: ['estudiante', 'admin'] },
-  { path: '/horarios',   label: 'Horarios',           icon: Calendar },
-  { path: '/noticias',   label: 'Noticias',           icon: Newspaper },
-  { path: '/reportes',   label: 'Reportes',           icon: BarChart3,      roles: ['admin'] },
-  { path: '/perfil',     label: 'Mi Perfil',          icon: User },
+  { path: '/horarios',    label: 'Horarios',           icon: Calendar },
+  { path: '/noticias',    label: 'Noticias',           icon: Newspaper },
+  { path: '/foros',       label: 'Foros',              icon: MessageSquare },
+  { path: '/mensajeria',  label: 'Mensajería',         icon: Bell },
+  { path: '/pagos',       label: 'Pagos',              icon: CreditCard,     roles: ['admin', 'estudiante'] },
+  { path: '/soporte',     label: 'Soporte',            icon: HeadphonesIcon },
+  { path: '/reportes',    label: 'Reportes',           icon: BarChart3,      roles: ['admin'] },
+  { path: '/perfil',      label: 'Mi Perfil',          icon: User },
 ];
 
 const Sidebar = ({ isOpen, setIsOpen }) => {

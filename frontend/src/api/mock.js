@@ -119,6 +119,48 @@ const clasesVirtuales = [
   { id: 5, curso_id: 4, docente_id: 2, titulo: 'Mecánica Newtoniana', descripcion: 'Leyes del movimiento y dinámica de partículas.', enlace: 'https://zoom.us/j/demo-fis102', fecha_hora: '2026-04-20T09:00:00', estado: 'cancelada', docente: 'Prof. Ramos', curso: 'Física General' },
 ];
 
+const foros = [
+  { id: 1, titulo: 'Dudas sobre Python — Semana 1', descripcion: 'Espacio para resolver dudas de la primera semana.', curso: 'Introducción a la Programación', hilos: 5 },
+  { id: 2, titulo: 'Problemas de Cálculo Diferencial', descripcion: 'Comparte y resuelve ejercicios de cálculo.', curso: 'Cálculo Diferencial', hilos: 3 },
+  { id: 3, titulo: 'Foro General', descripcion: 'Temas generales de la institución.', curso: 'General', hilos: 8 },
+];
+
+const hilos = [
+  { id: 1, titulo: '¿Cómo funciona un bucle while?', contenido: 'Tengo dudas sobre la condición de parada.', autor: 'Carlos Pérez', fijado: false, respuestas: 4, created_at: '2026-04-25T10:00:00' },
+  { id: 2, titulo: 'Error en mi código de listas', contenido: 'Me sale IndexError al recorrer la lista.', autor: 'Ana Torres', fijado: true, respuestas: 2, created_at: '2026-04-26T09:00:00' },
+];
+
+const conversaciones = [
+  { id: 1, nombre: 'Prof. García', rol: 'docente', ultimo_mensaje: 'Recuerda entregar la tarea.', no_leidos: 2 },
+  { id: 2, nombre: 'Ana Torres', rol: 'estudiante', ultimo_mensaje: '¿Tienes los apuntes?', no_leidos: 0 },
+  { id: 3, nombre: 'Admin Sistema', rol: 'admin', ultimo_mensaje: 'Tu cuenta fue activada.', no_leidos: 1 },
+];
+
+const mensajes = [
+  { id: 1, contenido: 'Hola, ¿cómo estás?', remitente: 'Prof. García', remitente_id: 2, created_at: '2026-04-27T09:00:00', propio: false },
+  { id: 2, contenido: 'Bien, gracias. ¿Hay tarea?', remitente: 'Yo', remitente_id: 3, created_at: '2026-04-27T09:02:00', propio: true },
+  { id: 3, contenido: 'Sí, recuerda entregar la tarea del módulo 2.', remitente: 'Prof. García', remitente_id: 2, created_at: '2026-04-27T09:05:00', propio: false },
+];
+
+const conceptosPago = [
+  { id: 1, nombre: 'Matrícula 2026-I', monto: 250.00, descripcion: 'Pago de matrícula semestral' },
+  { id: 2, nombre: 'Pensión Mensual', monto: 180.00, descripcion: 'Cuota mensual de enseñanza' },
+  { id: 3, nombre: 'Seguro Estudiantil', monto: 35.00, descripcion: 'Seguro médico estudiantil' },
+];
+
+const pagos = [
+  { id: 1, concepto: 'Matrícula 2026-I', monto: 250.00, estado: 'pagado', fecha_vencimiento: '2026-03-01' },
+  { id: 2, concepto: 'Pensión Abril', monto: 180.00, estado: 'pagado', fecha_vencimiento: '2026-04-05' },
+  { id: 3, concepto: 'Pensión Mayo', monto: 180.00, estado: 'pendiente', fecha_vencimiento: '2026-05-05' },
+  { id: 4, concepto: 'Seguro Estudiantil', monto: 35.00, estado: 'vencido', fecha_vencimiento: '2026-04-01' },
+];
+
+const tickets = [
+  { id: 1, asunto: 'No puedo acceder al sistema', descripcion: 'Me sale error de credenciales inválidas aunque estoy seguro de mi contraseña.', categoria: 'tecnico', prioridad: 'alta', estado: 'en_proceso', created_at: '2026-04-25T08:00:00' },
+  { id: 2, asunto: 'Error en mis notas registradas', descripcion: 'La nota de Cálculo aparece incorrecta en mi historial.', categoria: 'academico', prioridad: 'media', estado: 'abierto', created_at: '2026-04-26T10:00:00' },
+  { id: 3, asunto: 'Solicitud de certificado', descripcion: 'Necesito un certificado de estudios para trámite bancario.', categoria: 'administrativo', prioridad: 'baja', estado: 'resuelto', created_at: '2026-04-20T14:00:00' },
+];
+
 export const MOCK = {
   cursos,
   matriculas,
@@ -131,4 +173,11 @@ export const MOCK = {
   materiales,
   historialAcademico,
   reportesResumen,
+  foros,
+  hilos,
+  conversaciones,
+  mensajes,
+  pagos,
+  conceptosPago,
+  tickets,
 };
