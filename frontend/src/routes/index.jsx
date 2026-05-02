@@ -39,6 +39,7 @@ const ROUTE_ROLES = {
   matriculas: ['admin', 'estudiante'],
   reportes:   ['admin'],
   historial:  ['estudiante', 'admin'],
+  pagos:      ['admin'],
 };
 
 function PageError() {
@@ -101,7 +102,14 @@ export const router = createBrowserRouter([
           { path: 'calendario',  element: <CalendarioPage /> },
           { path: 'foros',       element: <ForosPage /> },
           { path: 'mensajeria',  element: <MensajeriaPage /> },
-          { path: 'pagos',       element: <PagosPage /> },
+          {
+            path: 'pagos',
+            element: (
+              <RoleGuard allowed={ROUTE_ROLES.pagos}>
+                <PagosPage />
+              </RoleGuard>
+            ),
+          },
           { path: 'soporte',     element: <SoportePage /> },
           {
             path: 'historial',
