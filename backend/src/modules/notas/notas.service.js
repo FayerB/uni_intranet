@@ -56,4 +56,50 @@ const upsertMany = async (cursoId, grades) => {
   return results;
 };
 
-module.exports = { getByCourse, upsertMany };
+/** Historial académico de un estudiante agrupado por ciclo */
+const getHistorial = async (estudiante_id) => {
+  const { rows } = await pool.query(
+    `SELECT c.ciclo, c.nombre AS curso_nombre, c.codigo, c.creditos,
+       n.p1, n.p2, n.ep, n.ef, n.promedio, n.estado
+     FROM matriculas m
+     JOIN cursos c ON c.id = m.curso_id
+     LEFT JOIN notas n ON n.estudiante_id = m.estudiante_id AND n.curso_id = m.curso_id
+     WHERE m.estudiante_id = $1
+     ORDER BY c.ciclo DESC NULLS LAST, c.nombre ASC`,
+    [estudiante_id]
+  );
+
+  // Agrupar por ciclo
+  const map = new Map();
+  for (const r of rows) {
+    const ciclo = r.ciclo || 'Sin ciclo';
+    if (!map.has(ciclo)) map.set(ciclo, { ciclo, cursos: [], promedio: 0, creditos: 0 });
+    const entry = map.get(ciclo);
+    entry.cursos.push({
+      nombre:   r.curso_nombre,
+      codigo:   r.codigo,
+      creditos: r.creditos,
+      p1:       parseFloat(r.p1 ?? 0),
+      p2:       parseFloat(r.p2 ?? 0),
+      ep:       parseFloat(r.ep ?? 0),
+      ef:       parseFloat(r.ef ?? 0),
+      promedio: parseFloat(r.promedio ?? 0),
+      estado:   r.estado || 'pendiente',
+    });
+  }
+
+  // Calcular promedio y créditos por ciclo
+  const result = [];
+  for (const entry of map.values()) {
+    const cursosConNota = entry.cursos.filter((c) => c.promedio > 0);
+    entry.promedio = cursosConNota.length
+      ? parseFloat((cursosConNota.reduce((s, c) => s + c.promedio, 0) / cursosConNota.length).toFixed(1))
+      : 0;
+    entry.creditos = entry.cursos.reduce((s, c) => s + (c.creditos || 0), 0);
+    entry.aprobados = entry.cursos.filter((c) => c.estado === 'aprobado').length;
+    result.push(entry);
+  }
+  return result;
+};
+
+module.exports = { getByCourse, upsertMany, getHistorial };

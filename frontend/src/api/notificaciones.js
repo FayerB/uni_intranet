@@ -1,19 +1,10 @@
 import api from './index';
-import { fetchSafe } from './fetchSafe';
-import { MOCK } from './mock';
 
-// TODO: implementar endpoints en el backend
-// GET  /notificaciones
-// PATCH /notificaciones/:id/leer
-// PATCH /notificaciones/leer-todas
-
+// Ahora los endpoints existen realmente en el backend
 export const notifAPI = {
-  getAll: () =>
-    fetchSafe(api.get('/notificaciones'), MOCK.notificaciones),
-
-  markRead: (id) =>
-    api.patch(`/notificaciones/${id}/leer`).catch(() => {}),
-
-  markAllRead: () =>
-    api.patch('/notificaciones/leer-todas').catch(() => {}),
+  getAll:      (params) => api.get('/notificaciones', { params }).then((r) => r.data),
+  count:       ()       => api.get('/notificaciones/count').then((r) => r.data.count),
+  markRead:    (id)     => api.patch(`/notificaciones/${id}/leer`).catch(() => {}),
+  markAllRead: ()       => api.patch('/notificaciones/leer-todas').catch(() => {}),
+  delete:      (id)     => api.delete(`/notificaciones/${id}`),
 };

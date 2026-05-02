@@ -1,8 +1,15 @@
 import api from './index';
-import { fetchSafe } from './fetchSafe';
-import { MOCK } from './mock';
 
 export const historialAPI = {
-  get: () =>
-    fetchSafe(api.get('/historial-academico'), MOCK.historialAcademico),
+  // Devuelve el historial del estudiante logueado agrupado por ciclo
+  get: async () => {
+    const { data } = await api.get('/notas/historial');
+    return data;
+  },
+
+  // Para admin/docente/padre: historial de un estudiante específico
+  getByEstudiante: async (estudianteId) => {
+    const { data } = await api.get(`/notas/historial/${estudianteId}`);
+    return data;
+  },
 };

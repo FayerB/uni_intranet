@@ -67,11 +67,11 @@ export default function LoginPage() {
             </div>
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
-            Bienvenido a UniIntranet
+            Bienvenido a EduColegio
           </h1>
           <p className="text-lg text-primary-100 font-light leading-relaxed">
-            Plataforma académica integral diseñada para impulsar la excelencia educativa.
-            Gestiona tus cursos, notas y horarios de manera eficiente y moderna.
+            Plataforma escolar integral diseñada para impulsar la excelencia educativa.
+            Gestiona materias, notas, tareas y horarios de manera eficiente y moderna.
           </p>
         </motion.div>
       </div>
@@ -88,7 +88,7 @@ export default function LoginPage() {
             <div className="p-2 bg-primary rounded-xl">
               <BookOpen size={24} className="text-white" />
             </div>
-            <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">UniIntranet</span>
+            <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">EduColegio</span>
           </div>
 
           <div className="mb-10 lg:mb-12">
@@ -111,7 +111,7 @@ export default function LoginPage() {
                   pattern: { value: /^\S+@\S+\.\S+$/i, message: 'Correo electrónico inválido' },
                 })}
                 type="email"
-                placeholder="usuario@universidad.edu"
+                placeholder="usuario@colegio.edu"
                 icon={Mail}
                 error={errors.email}
               />
@@ -158,7 +158,7 @@ export default function LoginPage() {
                     title: 'Recuperar Contraseña',
                     input: 'email',
                     inputLabel: 'Ingresa tu correo institucional',
-                    inputPlaceholder: 'usuario@universidad.edu',
+                    inputPlaceholder: 'usuario@colegio.edu',
                     showCancelButton: true,
                     confirmButtonText: 'Enviar enlace',
                     cancelButtonText: 'Cancelar',
@@ -188,7 +188,7 @@ export default function LoginPage() {
                 Swal.fire({
                   icon: 'info',
                   title: 'Soporte IT',
-                  text: 'Puedes comunicarte al anexo 1234 o enviar un correo a soporte@universidad.edu para asistencia técnica inmediata.',
+                  text: 'Puedes comunicarte al anexo 1234 o enviar un correo a soporte@colegio.edu para asistencia técnica inmediata.',
                   confirmButtonColor: '#1e3a8a',
                 });
               }}

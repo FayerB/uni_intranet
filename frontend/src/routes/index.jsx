@@ -18,6 +18,10 @@ import ReportesPage from '../pages/reportes/ReportesPage';
 import ClasesVirtualesPage from '../pages/clases/ClasesVirtualesPage';
 import MaterialCursoPage from '../pages/material/MaterialCursoPage';
 import HistorialPage from '../pages/historial/HistorialPage';
+// Nuevos módulos
+import TareasPage from '../pages/tareas/TareasPage';
+import RecursosPage from '../pages/recursos/RecursosPage';
+import CalendarioPage from '../pages/calendario/CalendarioPage';
 
 function PrivateRoute() {
   const { user } = useStore();
@@ -86,8 +90,11 @@ export const router = createBrowserRouter([
           { path: 'asistencia', element: <AsistenciaPage /> },
           { path: 'horarios',   element: <HorariosPage /> },
           { path: 'noticias',   element: <NoticiasPage /> },
-          { path: 'clases',    element: <ClasesVirtualesPage /> },
-          { path: 'material',  element: <MaterialCursoPage /> },
+          { path: 'clases',     element: <ClasesVirtualesPage /> },
+          { path: 'material',   element: <MaterialCursoPage /> },
+          { path: 'tareas',     element: <TareasPage /> },
+          { path: 'recursos',   element: <RecursosPage /> },
+          { path: 'calendario', element: <CalendarioPage /> },
           {
             path: 'historial',
             element: (
