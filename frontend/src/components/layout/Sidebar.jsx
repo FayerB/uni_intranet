@@ -27,7 +27,7 @@ const NAV_ITEMS = [
   { path: '/noticias',    label: 'Noticias',           icon: Newspaper },
   { path: '/foros',       label: 'Foros',              icon: MessageSquare },
   { path: '/mensajeria',  label: 'Mensajería',         icon: Bell },
-  { path: '/pagos',       label: 'Pagos',              icon: CreditCard,     roles: ['admin', 'estudiante'] },
+  { path: '/pagos',       label: 'Pagos',              icon: CreditCard,     roles: ['admin'] },
   { path: '/soporte',     label: 'Soporte',            icon: HeadphonesIcon },
   { path: '/reportes',    label: 'Reportes',           icon: BarChart3,      roles: ['admin'] },
   { path: '/perfil',      label: 'Mi Perfil',          icon: User },
