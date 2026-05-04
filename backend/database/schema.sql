@@ -648,3 +648,30 @@ CREATE TABLE IF NOT EXISTS alertas (
 );
 
 CREATE INDEX IF NOT EXISTS idx_alertas_estudiante ON alertas(estudiante_id, resuelta);
+
+
+-- =====================================================================
+-- 23. CIRCULARES / COMUNICADOS
+-- =====================================================================
+
+CREATE TABLE IF NOT EXISTS circulares (
+  id           UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+  titulo       VARCHAR(200) NOT NULL,
+  contenido    TEXT         NOT NULL,
+  destinatario VARCHAR(20)  NOT NULL DEFAULT 'todos'
+                 CHECK (destinatario IN ('todos', 'docentes', 'estudiantes')),
+  autor_id     UUID         NOT NULL REFERENCES usuarios(id),
+  activo       BOOLEAN      NOT NULL DEFAULT true,
+  created_at   TIMESTAMP    NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS circulares_leidas (
+  circular_id UUID      NOT NULL REFERENCES circulares(id) ON DELETE CASCADE,
+  usuario_id  UUID      NOT NULL REFERENCES usuarios(id)   ON DELETE CASCADE,
+  leida_en    TIMESTAMP NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (circular_id, usuario_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_circulares_autor        ON circulares(autor_id);
+CREATE INDEX IF NOT EXISTS idx_circulares_destinatario ON circulares(destinatario, activo);
+CREATE INDEX IF NOT EXISTS idx_circulares_leidas_user  ON circulares_leidas(usuario_id);

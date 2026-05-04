@@ -28,6 +28,7 @@ const pagosRoutes           = require('./modules/pagos/pagos.routes');
 const soporteRoutes         = require('./modules/soporte/soporte.routes');
 const configuracionRoutes   = require('./modules/configuracion/configuracion.routes');
 const archivosRoutes        = require('./modules/archivos/archivos.routes');
+const circularesRoutes      = require('./modules/circulares/circulares.routes');
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 const errorHandler = require('./middlewares/errorHandler.middleware');
@@ -87,6 +88,7 @@ app.use('/api/pagos',           pagosRoutes);
 app.use('/api/soporte',         soporteRoutes);
 app.use('/api/configuracion',   configuracionRoutes);
 app.use('/api/archivos',        archivosRoutes);
+app.use('/api/circulares',      circularesRoutes);
 
 // ─── 404 ──────────────────────────────────────────────────────────────────────
 app.use((_req, res) => res.status(404).json({ message: 'Ruta no encontrada' }));

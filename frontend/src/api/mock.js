@@ -161,6 +161,12 @@ const tickets = [
   { id: 3, asunto: 'Solicitud de certificado', descripcion: 'Necesito un certificado de estudios para trámite bancario.', categoria: 'administrativo', prioridad: 'baja', estado: 'resuelto', created_at: '2026-04-20T14:00:00' },
 ];
 
+const circulares = [
+  { id: 1, titulo: 'Inicio de clases 2026-I', contenido: 'El inicio del ciclo académico 2026-I está programado para el 5 de mayo. Se requiere matrícula vigente para acceder a las aulas virtuales.', destinatario: 'todos', autor: 'Dirección Académica', created_at: '2026-04-28T10:00:00', leida: false },
+  { id: 2, titulo: 'Capacitación docente — Plataforma Virtual', contenido: 'Se convoca a todos los docentes a la capacitación en uso de la plataforma virtual el día 3 de mayo a las 3:00 PM en el aula de cómputo principal.', destinatario: 'docentes', autor: 'Coordinación Pedagógica', created_at: '2026-04-25T08:00:00', leida: false },
+  { id: 3, titulo: 'Recordatorio entrega de trabajos finales', contenido: 'Se recuerda a los estudiantes que la fecha límite para la entrega de trabajos del ciclo 2025-II es el 30 de abril. No se aceptarán entregas tardías.', destinatario: 'estudiantes', autor: 'Secretaría Académica', created_at: '2026-04-22T12:00:00', leida: true },
+];
+
 export const MOCK = {
   cursos,
   matriculas,
@@ -180,4 +186,5 @@ export const MOCK = {
   pagos,
   conceptosPago,
   tickets,
+  circulares,
 };
