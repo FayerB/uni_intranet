@@ -7,7 +7,7 @@ const router = Router();
 router.use(auth);
 
 router.get('/',                    ctrl.getConversaciones);
-router.post('/iniciar',            ctrl.iniciarDirecta);
+router.post('/iniciar',            validate(schemas.iniciarDirecta), ctrl.iniciarDirecta);
 router.get('/:id/mensajes',        ctrl.getMensajes);
 router.post('/:id/mensajes',       validate(schemas.mensaje), ctrl.enviar);
 

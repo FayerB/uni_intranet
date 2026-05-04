@@ -1,4 +1,5 @@
 const pool = require('../../config/db');
+const { ApiError } = require('../../utils/apiError');
 
 const getConversaciones = async (usuario_id) => {
   const { rows } = await pool.query(
@@ -30,7 +31,7 @@ const getMensajes = async (conversacion_id, usuario_id, { limit = 50, before } =
     'SELECT 1 FROM participantes_conversacion WHERE conversacion_id = $1 AND usuario_id = $2',
     [conversacion_id, usuario_id]
   );
-  if (!p) throw new Error('No eres participante de esta conversación');
+  if (!p) throw ApiError.forbidden('No eres participante de esta conversación');
 
   let query = `
     SELECT m.*, u.nombre || ' ' || u.apellido AS remitente_nombre, u.avatar_url
@@ -90,7 +91,7 @@ const enviarMensaje = async (conversacion_id, remitente_id, { contenido, archivo
     'SELECT 1 FROM participantes_conversacion WHERE conversacion_id = $1 AND usuario_id = $2',
     [conversacion_id, remitente_id]
   );
-  if (!p) throw new Error('No eres participante de esta conversación');
+  if (!p) throw ApiError.forbidden('No eres participante de esta conversación');
 
   const { rows: [m] } = await pool.query(
     `INSERT INTO mensajes (conversacion_id, remitente_id, contenido, archivo_id)

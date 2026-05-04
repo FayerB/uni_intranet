@@ -108,6 +108,10 @@ const schemas = {
     archivo_id: Joi.string().uuid().allow(null),
   }),
 
+  iniciarDirecta: Joi.object({
+    usuario_id: Joi.string().uuid({ version: ['uuidv4'] }).required(),
+  }),
+
   recurso: Joi.object({
     titulo:       Joi.string().max(200).required(),
     descripcion:  Joi.string().max(2000).allow('', null),
