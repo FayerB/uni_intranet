@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, BellRing, Shield, Globe } from 'lucide-react';
+import { X, Settings, BellRing, Globe } from 'lucide-react';
 
 // Persiste en localStorage y simula guardado en backend.
 // TODO: reemplazar localStorage.setItem por api.put('/usuarios/configuracion', ...)
@@ -61,19 +61,6 @@ export function SettingsModal({ isOpen, onClose }) {
                 <Toggle checked={notifEnabled} onChange={toggleNotif} />
               </SettingRow>
 
-              {/* Autenticación 2FA */}
-              <SettingRow
-                icon={<Shield size={20} />}
-                iconBg="bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400"
-                title="Autenticación 2FA"
-                description="Protege tu cuenta con dos pasos."
-              >
-                {/* TODO: abrir flujo de configuración 2FA */}
-                <button className="text-sm font-medium text-primary hover:text-primary-600 transition-colors">
-                  Activar
-                </button>
-              </SettingRow>
-
               {/* Privacidad Pública */}
               <SettingRow
                 icon={<Globe size={20} />}
@@ -85,7 +72,7 @@ export function SettingsModal({ isOpen, onClose }) {
               </SettingRow>
 
               <p className="text-center text-xs text-gray-400 pt-2">
-                Los cambios se guardan automáticamente en tu sesión.
+                Las preferencias se guardan en este dispositivo.
               </p>
             </div>
           </motion.div>
