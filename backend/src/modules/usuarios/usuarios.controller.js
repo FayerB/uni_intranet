@@ -57,4 +57,17 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getById, create, update, remove };
+const changePassword = async (req, res) => {
+  try {
+    const { actual, nueva } = req.body;
+    if (!actual || !nueva) return res.status(400).json({ message: 'actual y nueva son requeridos' });
+    if (nueva.length < 6) return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres' });
+    const result = await usuariosService.changePassword(req.user.id, { actual, nueva });
+    res.json(result);
+  } catch (error) {
+    const status = error.message === 'Contraseña actual incorrecta' ? 400 : 500;
+    res.status(status).json({ message: error.message });
+  }
+};
+
+module.exports = { getAll, getById, create, update, remove, changePassword };

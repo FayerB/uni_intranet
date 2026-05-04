@@ -94,4 +94,14 @@ const remove = async (id) => {
   return { message: 'Usuario desactivado correctamente' };
 };
 
-module.exports = { getAll, getById, create, update, remove };
+const changePassword = async (id, { actual, nueva }) => {
+  const { rows } = await pool.query('SELECT password FROM usuarios WHERE id = $1', [id]);
+  if (!rows[0]) throw new Error('Usuario no encontrado');
+  const ok = await bcrypt.compare(actual, rows[0].password);
+  if (!ok) throw new Error('Contraseña actual incorrecta');
+  const hash = await bcrypt.hash(nueva, 10);
+  await pool.query('UPDATE usuarios SET password = $1, updated_at = NOW() WHERE id = $2', [hash, id]);
+  return { message: 'Contraseña actualizada correctamente' };
+};
+
+module.exports = { getAll, getById, create, update, remove, changePassword };

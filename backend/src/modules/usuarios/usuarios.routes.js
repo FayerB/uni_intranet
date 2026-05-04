@@ -7,6 +7,7 @@ const router = Router();
 
 router.use(authMiddleware);
 
+router.patch('/perfil/password', usuariosController.changePassword);
 router.get('/', usuariosController.getAll);
 router.get('/:id', usuariosController.getById);
 router.post('/', roleMiddleware('admin'), usuariosController.create);

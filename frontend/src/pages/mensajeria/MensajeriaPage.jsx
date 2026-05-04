@@ -17,6 +17,7 @@ export default function MensajeriaPage() {
   const [showNueva, setShowNueva]   = useState(false);
   const [usuarios, setUsuarios]     = useState([]);
   const [searchUser, setSearchUser] = useState('');
+  const [showSidebar, setShowSidebar] = useState(true);
   const bottomRef  = useRef(null);
   const activaRef  = useRef(null);
   const pollingRef = useRef(null);
@@ -102,9 +103,9 @@ export default function MensajeriaPage() {
     .filter((u) => !searchUser || (u.name || u.nombre)?.toLowerCase().includes(searchUser.toLowerCase()));
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex gap-4">
+    <div className="h-[calc(100vh-8rem)] flex gap-3">
       {/* Lista de conversaciones */}
-      <div className="w-72 shrink-0 flex flex-col bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+      <div className={`${showSidebar ? 'flex' : 'hidden'} sm:flex w-full sm:w-72 shrink-0 flex-col bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden absolute sm:static inset-0 z-20 sm:z-auto`}>
         <div className="p-4 border-b border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-bold text-gray-900 dark:text-white">Mensajes</h2>
@@ -128,7 +129,7 @@ export default function MensajeriaPage() {
               <button onClick={() => setShowNueva(true)} className="text-xs text-primary hover:underline mt-1">Iniciar una</button>
             </div>
           ) : filtradas.map((c) => (
-            <button key={c.id} onClick={() => setActiva(c)}
+            <button key={c.id} onClick={() => { setActiva(c); setShowSidebar(false); }}
               className={`w-full text-left flex items-center gap-3 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors ${activa?.id === c.id ? 'bg-primary/5 dark:bg-primary/10' : ''}`}>
               <div className="w-9 h-9 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm shrink-0">
                 {c.nombre?.[0]?.toUpperCase() || <User size={14} />}
@@ -146,7 +147,7 @@ export default function MensajeriaPage() {
       </div>
 
       {/* Chat */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+      <div className={`flex-1 flex flex-col bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden ${showSidebar ? 'hidden sm:flex' : 'flex'}`}>
         {!activa ? (
           <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-3">
             <MessageSquare size={48} className="opacity-30" />
@@ -159,11 +160,15 @@ export default function MensajeriaPage() {
         ) : (
           <>
             <div className="flex items-center gap-3 p-4 border-b border-gray-100 dark:border-gray-700">
-              <div className="w-9 h-9 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm">
+              <button onClick={() => { setShowSidebar(true); setActiva(null); }}
+                className="sm:hidden p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                ←
+              </button>
+              <div className="w-9 h-9 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm shrink-0">
                 {activa.nombre?.[0]?.toUpperCase()}
               </div>
-              <div className="flex-1">
-                <p className="font-semibold text-gray-900 dark:text-white text-sm">{activa.nombre}</p>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-gray-900 dark:text-white text-sm truncate">{activa.nombre}</p>
                 <p className="text-xs text-gray-400 capitalize">{activa.rol || 'Usuario'}</p>
               </div>
             </div>
