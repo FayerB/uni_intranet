@@ -11,6 +11,9 @@ const errorHandler = (err, req, res, _next) => {
     return res.status(503).json({ message: 'Módulo en configuración. Contacta al administrador.' });
   }
 
+  // PostgreSQL: UUID inválido recibido como parámetro
+  if (err.code === '22P02') return res.status(400).json({ message: 'ID con formato inválido' });
+
   // PostgreSQL constraint violations
   if (err.code === '23505') return res.status(409).json({ message: 'El registro ya existe (duplicado)' });
   if (err.code === '23503') return res.status(400).json({ message: 'Referencia inválida (clave foránea)' });
