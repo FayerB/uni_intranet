@@ -59,7 +59,7 @@ export default function NotasPage() {
   };
 
   const calcAvg = (g) =>
-    Math.round((g.p1 * 0.15) + (g.p2 * 0.15) + (g.ep * 0.3) + (g.ef * 0.4));
+    Math.round((g.p1 + g.p2 + g.ep + g.ef) / 4);
 
   const gradeClass = (val) => {
     if (val >= 14) return 'text-primary font-bold dark:text-primary-400';
@@ -86,10 +86,10 @@ export default function NotasPage() {
   };
 
   const FIELDS = [
-    { key: 'p1', label: 'Práctica 1 (15%)' },
-    { key: 'p2', label: 'Práctica 2 (15%)' },
-    { key: 'ep', label: 'Parcial (30%)' },
-    { key: 'ef', label: 'Final (40%)' },
+    { key: 'p1', label: 'Bimestre 1' },
+    { key: 'p2', label: 'Bimestre 2' },
+    { key: 'ep', label: 'Bimestre 3' },
+    { key: 'ef', label: 'Bimestre 4' },
   ];
 
   return (
@@ -101,7 +101,7 @@ export default function NotasPage() {
             Registro de Notas
           </h1>
           <p className="text-gray-500 mt-1">
-            {isStudent ? 'Consulta tus calificaciones por curso.' : 'Ingresa y calcula los promedios de tus alumnos.'}
+            {isStudent ? 'Consulta tus notas bimestrales por curso.' : 'Registra las notas bimestrales de tus alumnos.'}
           </p>
         </motion.div>
 

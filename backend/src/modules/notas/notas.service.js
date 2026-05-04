@@ -34,7 +34,7 @@ const getByCourse = async (cursoId, userId, showAll) => {
 };
 
 const calcPromedio = (p1, p2, ep, ef) =>
-  Math.round((p1 * 0.15) + (p2 * 0.15) + (ep * 0.30) + (ef * 0.40));
+  Math.round((p1 + p2 + ep + ef) / 4);
 
 const upsertMany = async (cursoId, grades) => {
   const results = [];
