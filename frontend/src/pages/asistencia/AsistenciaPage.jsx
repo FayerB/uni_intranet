@@ -127,11 +127,11 @@ export default function AsistenciaPage() {
       {/* Course selector */}
       <motion.div
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
-        className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex items-center gap-4"
+        className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-wrap items-center gap-3"
       >
         <label className="font-medium text-gray-700 dark:text-gray-300">Curso:</label>
         <select
-          className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2 text-sm focus:ring-primary w-64"
+          className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2 text-sm focus:ring-primary flex-1 sm:flex-none sm:w-72"
           value={selectedCourse}
           onChange={(e) => setSelectedCourse(e.target.value)}
         >

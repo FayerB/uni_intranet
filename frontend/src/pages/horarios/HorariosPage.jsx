@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
-import { Calendar as CalendarIcon, Clock, MapPin } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, MapPin, Download } from 'lucide-react';
 import { Card, CardContent } from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
-import Swal from 'sweetalert2';
 
 const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 const HOURS = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
@@ -16,24 +14,6 @@ const SCHEDULE = [
 ];
 
 export default function HorariosPage() {
-  const handleDownloadPdf = () => {
-    Swal.fire({
-      icon: 'info',
-      title: 'Descarga simulada',
-      text: 'La exportacion a PDF estara disponible en la siguiente iteracion.',
-      confirmButtonColor: '#1e3a8a',
-    });
-  };
-
-  const handleSyncCalendar = () => {
-    Swal.fire({
-      icon: 'success',
-      title: 'Sincronizacion iniciada',
-      text: 'Tu horario fue enviado a Google Calendar correctamente.',
-      confirmButtonColor: '#1e3a8a',
-    });
-  };
-
   const getEventForSlot = (day, hour) => {
     return SCHEDULE.find(s => s.day === day && s.startHour === hour);
   };
@@ -58,15 +38,11 @@ export default function HorariosPage() {
           <p className="text-gray-500 mt-1">Revisa tu cronograma semanal de clases.</p>
         </motion.div>
         
-        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="w-full sm:w-auto">
-          <div className="flex flex-wrap justify-start sm:justify-end gap-2">
-            <Button variant="outline" onClick={handleDownloadPdf}>
-              Descargar PDF
-            </Button>
-            <Button onClick={handleSyncCalendar}>
-              Sincronizar Google Calendar
-            </Button>
-          </div>
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+          <button onClick={() => window.print()}
+            className="flex items-center gap-2 px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <Download size={15} /> Imprimir horario
+          </button>
         </motion.div>
       </div>
 

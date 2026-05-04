@@ -121,10 +121,10 @@ export default function NotasPage() {
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
         className="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm"
       >
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4">
           <label className="font-medium text-gray-700 dark:text-gray-300">Curso:</label>
           <select
-            className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2 text-sm focus:ring-primary w-64"
+            className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2 text-sm focus:ring-primary w-full sm:w-72"
             value={selectedCourse}
             onChange={(e) => setSelectedCourse(e.target.value)}
           >
@@ -142,7 +142,7 @@ export default function NotasPage() {
         ) : grades.length === 0 ? (
           <div className="text-center py-12 text-gray-400">No hay estudiantes matriculados en este curso.</div>
         ) : (
-          <Table>
+          <div className="overflow-x-auto"><Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Estudiante</TableHead>
@@ -195,7 +195,7 @@ export default function NotasPage() {
                 );
               })}
             </tbody>
-          </Table>
+          </Table></div>
         )}
       </motion.div>
     </div>
