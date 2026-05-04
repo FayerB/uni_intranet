@@ -26,6 +26,7 @@ import ForosPage from '../pages/foros/ForosPage';
 import MensajeriaPage from '../pages/mensajeria/MensajeriaPage';
 import PagosPage from '../pages/pagos/PagosPage';
 import SoportePage from '../pages/soporte/SoportePage';
+import CircularesPage from '../pages/circulares/CircularesPage';
 
 function PrivateRoute() {
   const { user } = useStore();
@@ -111,6 +112,7 @@ export const router = createBrowserRouter([
             ),
           },
           { path: 'soporte',     element: <SoportePage /> },
+          { path: 'circulares',  element: <CircularesPage /> },
           {
             path: 'historial',
             element: (

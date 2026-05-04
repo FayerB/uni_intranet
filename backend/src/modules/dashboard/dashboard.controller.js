@@ -1,11 +1,11 @@
 const dashboardService = require('./dashboard.service');
 
-const getStats = async (_req, res) => {
+const getStats = async (req, res, next) => {
   try {
-    const stats = await dashboardService.getStats();
+    const stats = await dashboardService.getStats(req.user.role, req.user.id);
     res.json(stats);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 

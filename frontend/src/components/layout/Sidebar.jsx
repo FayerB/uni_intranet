@@ -4,7 +4,7 @@ import {
   CheckSquare, Calendar, Newspaper, BarChart3, User, Building2,
   Video, BookMarked, ScrollText, X, Sun, Moon, LogOut,
   ClipboardList, Library, CalendarDays, MessageSquare, Bell,
-  HeadphonesIcon, CreditCard, Settings
+  HeadphonesIcon, CreditCard, Megaphone
 } from 'lucide-react';
 import { useStore } from '../../context/useStore';
 import { useRole } from '../../hooks/useRole';
@@ -29,6 +29,7 @@ const NAV_ITEMS = [
   { path: '/mensajeria',  label: 'Mensajería',         icon: Bell },
   { path: '/pagos',       label: 'Pagos',              icon: CreditCard,     roles: ['admin'] },
   { path: '/soporte',     label: 'Soporte',            icon: HeadphonesIcon },
+  { path: '/circulares',  label: 'Circulares',         icon: Megaphone },
   { path: '/reportes',    label: 'Reportes',           icon: BarChart3,      roles: ['admin'] },
   { path: '/perfil',      label: 'Mi Perfil',          icon: User },
 ];
