@@ -16,11 +16,11 @@ const matriculas = [
 ];
 
 const notas = [
-  { estudianteId: 1, name: 'Ana Torres',   p1: 15, p2: 14, ep: 16, ef: 17 },
-  { estudianteId: 2, name: 'Carlos Ruiz',  p1: 12, p2: 10, ep: 13, ef: 11 },
-  { estudianteId: 3, name: 'María Soto',   p1: 18, p2: 17, ep: 19, ef: 18 },
-  { estudianteId: 4, name: 'Luis Mendoza', p1: 8,  p2: 9,  ep: 7,  ef: 10 },
-  { estudianteId: 5, name: 'Sara Díaz',    p1: 16, p2: 15, ep: 14, ef: 16 },
+  { estudianteId: 1, name: 'Ana Torres',   p1: 16, p2: 15, ep: 17, ef: 18 },
+  { estudianteId: 2, name: 'Carlos Ruiz',  p1: 12, p2: 11, ep: 13, ef: 12 },
+  { estudianteId: 3, name: 'María Soto',   p1: 19, p2: 18, ep: 20, ef: 19 },
+  { estudianteId: 4, name: 'Luis Mendoza', p1: 8,  p2: 9,  ep: 8,  ef: 10 },
+  { estudianteId: 5, name: 'Sara Díaz',    p1: 15, p2: 16, ep: 14, ef: 17 },
 ];
 
 const asistencias = [
