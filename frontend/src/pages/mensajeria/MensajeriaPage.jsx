@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { MessageSquare, Send, Search, User, Plus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { mensajeriaAPI } from '../../api/mensajeria';
-import { Card } from '../../components/ui/Card';
 import { useStore } from '../../context/useStore';
 import { MOCK } from '../../api/mock';
 import api from '../../api';
@@ -18,11 +17,20 @@ export default function MensajeriaPage() {
   const [showNueva, setShowNueva]   = useState(false);
   const [usuarios, setUsuarios]     = useState([]);
   const [searchUser, setSearchUser] = useState('');
-  const bottomRef = useRef(null);
+  const bottomRef  = useRef(null);
+  const activaRef  = useRef(null);
+  const pollingRef = useRef(null);
 
   const fetchConversaciones = () => {
     mensajeriaAPI.getConversaciones()
       .then((d) => setConversaciones(Array.isArray(d) ? d : MOCK.conversaciones))
+      .catch(() => {});
+  };
+
+  const fetchMensajes = (conv) => {
+    if (!conv) return;
+    mensajeriaAPI.getMensajes(conv.id)
+      .then((d) => { if (Array.isArray(d)) setMensajes(d); })
       .catch(() => {});
   };
 
@@ -35,13 +43,20 @@ export default function MensajeriaPage() {
   }, [showNueva]);
 
   useEffect(() => {
+    activaRef.current = activa;
+    clearInterval(pollingRef.current);
+
     if (activa) {
       setLoading(true);
       mensajeriaAPI.getMensajes(activa.id)
         .then((d) => setMensajes(Array.isArray(d) ? d : MOCK.mensajes))
         .catch(() => setMensajes(MOCK.mensajes))
         .finally(() => setLoading(false));
+
+      pollingRef.current = setInterval(() => fetchMensajes(activaRef.current), 4000);
     }
+
+    return () => clearInterval(pollingRef.current);
   }, [activa]);
 
   useEffect(() => {
@@ -58,16 +73,19 @@ export default function MensajeriaPage() {
   };
 
   const handleIniciarConv = async (destinatario) => {
+    const nombre = destinatario.name || destinatario.nombre;
+    const rol    = destinatario.role || destinatario.rol;
     try {
-      const conv = await mensajeriaAPI.iniciarDirecta({ destinatario_id: destinatario.id });
-      const nueva = conv?.data || { id: Date.now(), nombre: destinatario.name || destinatario.nombre, rol: destinatario.role || destinatario.rol, ultimo_mensaje: '', no_leidos: 0 };
+      const resp   = await mensajeriaAPI.iniciarDirecta(destinatario.id);
+      const convId = resp?.data?.conversacion_id;
+      const nueva  = { id: convId, nombre, rol, ultimo_mensaje: '', no_leidos: 0 };
       setConversaciones((p) => {
         const existe = p.find((c) => c.id === nueva.id);
         return existe ? p : [nueva, ...p];
       });
       setActiva(nueva);
     } catch {
-      const nueva = { id: Date.now(), nombre: destinatario.name || destinatario.nombre, rol: destinatario.role || destinatario.rol, ultimo_mensaje: '', no_leidos: 0 };
+      const nueva = { id: Date.now(), nombre, rol, ultimo_mensaje: '', no_leidos: 0 };
       setConversaciones((p) => [nueva, ...p]);
       setActiva(nueva);
     }
