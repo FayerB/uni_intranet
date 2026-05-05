@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '../../context/useStore';
 import { useRole } from '../../hooks/useRole';
+import logo from '../../assets/logo.png';
 
 // roles: undefined = todos los roles autenticados, array = solo esos roles
 const NAV_ITEMS = [
@@ -56,12 +57,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                    ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
     >
       <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700">
-        <div className="flex items-center space-x-3 text-xl font-extrabold text-primary dark:text-primary-400">
-          <div className="p-1.5 bg-primary/10 rounded-lg">
-            <Building2 size={24} className="text-primary" />
-          </div>
-          <span>EduColegio</span>
-        </div>
+        <img src={logo} alt="EduColegio" className="h-9 w-auto object-contain" />
         <button
           onClick={() => setIsOpen(false)}
           className="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
