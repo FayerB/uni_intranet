@@ -1,5 +1,5 @@
 const pool = require('../../config/db');
-const ApiError = require('../../utils/ApiError');
+const { ApiError } = require('../../utils/apiError');
 
 const DEST_FOR_ROLE = {
   admin:      ['todos', 'docentes', 'estudiantes'],
