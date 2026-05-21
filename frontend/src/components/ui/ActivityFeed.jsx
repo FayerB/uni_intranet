@@ -6,7 +6,7 @@ const activities = [
     id: 1,
     type: 'success',
     title: 'Nuevas matrículas registradas',
-    desc: 'Se han procesado 45 matrículas para el ciclo 2026-I.',
+    desc: 'Se han registrado 45 matrículas para el Año Escolar 2025.',
     time: 'Hace 2 horas',
     icon: CheckCircle2,
   },

@@ -2,14 +2,14 @@
 // Cada clave corresponde a un endpoint del sistema.
 
 const cursos = [
-  { id: 1, code: 'MAT-1A-2025', name: 'Matemática — 1° "A"',                               grado: '1°', seccion: 'A', description: 'Álgebra, geometría y aritmética para primer grado.',           credits: 6, ciclo: '1°A', type: 'Obligatorio', students: 28, docente: 'Prof. Torres',  image: null },
-  { id: 2, code: 'COM-1A-2025', name: 'Comunicación — 1° "A"',                              grado: '1°', seccion: 'A', description: 'Comprensión lectora, expresión oral y escrita.',              credits: 5, ciclo: '1°A', type: 'Obligatorio', students: 28, docente: 'Prof. Vargas',  image: null },
-  { id: 3, code: 'HGE-1A-2025', name: 'Historia, Geografía y Economía — 1° "A"',            grado: '1°', seccion: 'A', description: 'Historia del Perú, geografía y fundamentos económicos.',     credits: 3, ciclo: '1°A', type: 'Obligatorio', students: 28, docente: 'Prof. Quispe',  image: null },
-  { id: 4, code: 'CTA-1A-2025', name: 'Ciencia y Tecnología — 1° "A"',                      grado: '1°', seccion: 'A', description: 'Ciencias naturales, experimentos y tecnología aplicada.',    credits: 4, ciclo: '1°A', type: 'Obligatorio', students: 28, docente: 'Prof. Flores',  image: null },
-  { id: 5, code: 'ING-1A-2025', name: 'Inglés — 1° "A"',                                    grado: '1°', seccion: 'A', description: 'Inglés básico, vocabulario y comprensión auditiva.',         credits: 3, ciclo: '1°A', type: 'Obligatorio', students: 28, docente: 'Prof. Mendoza', image: null },
-  { id: 6, code: 'MAT-2A-2025', name: 'Matemática — 2° "A"',                               grado: '2°', seccion: 'A', description: 'Álgebra lineal, estadística y geometría analítica.',          credits: 6, ciclo: '2°A', type: 'Obligatorio', students: 25, docente: 'Prof. Torres',  image: null },
-  { id: 7, code: 'COM-2A-2025', name: 'Comunicación — 2° "A"',                              grado: '2°', seccion: 'A', description: 'Texto argumentativo, literatura peruana y redacción.',       credits: 5, ciclo: '2°A', type: 'Obligatorio', students: 25, docente: 'Prof. Vargas',  image: null },
-  { id: 8, code: 'HGE-2A-2025', name: 'Historia, Geografía y Economía — 2° "A"',            grado: '2°', seccion: 'A', description: 'Historia universal, geografía del Perú y economía básica.', credits: 3, ciclo: '2°A', type: 'Obligatorio', students: 25, docente: 'Prof. Quispe',  image: null },
+  { id: 1, code: 'MAT-1A-2025', name: 'Matemática — 1° "A"',                               grado: '1°', seccion: 'A', description: 'Álgebra, geometría y aritmética para primer grado.',           credits: 6, type: 'Obligatorio', students: 28, docente: 'Prof. Torres',  image: null },
+  { id: 2, code: 'COM-1A-2025', name: 'Comunicación — 1° "A"',                              grado: '1°', seccion: 'A', description: 'Comprensión lectora, expresión oral y escrita.',              credits: 5, type: 'Obligatorio', students: 28, docente: 'Prof. Vargas',  image: null },
+  { id: 3, code: 'HGE-1A-2025', name: 'Historia, Geografía y Economía — 1° "A"',            grado: '1°', seccion: 'A', description: 'Historia del Perú, geografía y fundamentos económicos.',     credits: 3, type: 'Obligatorio', students: 28, docente: 'Prof. Quispe',  image: null },
+  { id: 4, code: 'CTA-1A-2025', name: 'Ciencia y Tecnología — 1° "A"',                      grado: '1°', seccion: 'A', description: 'Ciencias naturales, experimentos y tecnología aplicada.',    credits: 4, type: 'Obligatorio', students: 28, docente: 'Prof. Flores',  image: null },
+  { id: 5, code: 'ING-1A-2025', name: 'Inglés — 1° "A"',                                    grado: '1°', seccion: 'A', description: 'Inglés básico, vocabulario y comprensión auditiva.',         credits: 3, type: 'Obligatorio', students: 28, docente: 'Prof. Mendoza', image: null },
+  { id: 6, code: 'MAT-2A-2025', name: 'Matemática — 2° "A"',                               grado: '2°', seccion: 'A', description: 'Álgebra lineal, estadística y geometría analítica.',          credits: 6, type: 'Obligatorio', students: 25, docente: 'Prof. Torres',  image: null },
+  { id: 7, code: 'COM-2A-2025', name: 'Comunicación — 2° "A"',                              grado: '2°', seccion: 'A', description: 'Texto argumentativo, literatura peruana y redacción.',       credits: 5, type: 'Obligatorio', students: 25, docente: 'Prof. Vargas',  image: null },
+  { id: 8, code: 'HGE-2A-2025', name: 'Historia, Geografía y Economía — 2° "A"',            grado: '2°', seccion: 'A', description: 'Historia universal, geografía del Perú y economía básica.', credits: 3, type: 'Obligatorio', students: 25, docente: 'Prof. Quispe',  image: null },
 ];
 
 const matriculas = [
@@ -181,9 +181,9 @@ const tickets = [
 ];
 
 const circulares = [
-  { id: 1, titulo: 'Inicio de clases 2026-I', contenido: 'El inicio del ciclo académico 2026-I está programado para el 5 de mayo. Se requiere matrícula vigente para acceder a las aulas virtuales.', destinatario: 'todos', autor: 'Dirección Académica', created_at: '2026-04-28T10:00:00', leida: false },
-  { id: 2, titulo: 'Capacitación docente — Plataforma Virtual', contenido: 'Se convoca a todos los docentes a la capacitación en uso de la plataforma virtual el día 3 de mayo a las 3:00 PM en el aula de cómputo principal.', destinatario: 'docentes', autor: 'Coordinación Pedagógica', created_at: '2026-04-25T08:00:00', leida: false },
-  { id: 3, titulo: 'Recordatorio entrega de trabajos finales', contenido: 'Se recuerda a los estudiantes que la fecha límite para la entrega de trabajos del ciclo 2025-II es el 30 de abril. No se aceptarán entregas tardías.', destinatario: 'estudiantes', autor: 'Secretaría Académica', created_at: '2026-04-22T12:00:00', leida: true },
+  { id: 1, titulo: 'Bienvenidos al Año Escolar 2025', contenido: 'Les damos la bienvenida al año escolar 2025. Las clases inician el lunes 3 de marzo. Recordamos que el uso del uniforme escolar es obligatorio.', destinatario: 'todos', autor: 'Dirección', created_at: '2025-03-01T08:00:00', leida: false },
+  { id: 2, titulo: 'Capacitación Docente — Plataforma Virtual', contenido: 'Se convoca a todos los docentes a la capacitación en uso de la plataforma virtual el viernes 23 de mayo a las 4:00 PM en el laboratorio de cómputo.', destinatario: 'docentes', autor: 'Dirección', created_at: '2025-05-15T08:00:00', leida: false },
+  { id: 3, titulo: 'Cronograma de Evaluaciones — Primer Bimestre', contenido: 'Se recuerda a los estudiantes que las evaluaciones del primer bimestre se realizarán del 28 de abril al 9 de mayo. Los docentes registrarán las notas antes del 16 de mayo.', destinatario: 'todos', autor: 'Secretaría Académica', created_at: '2025-04-20T08:00:00', leida: true },
 ];
 
 export const MOCK = {

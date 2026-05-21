@@ -142,15 +142,15 @@ async function seed() {
       const desc    = `Área ${m.nombre}, ${aula.grado} sección "${aula.seccion}", año 2025`;
 
       const cr = await pool.query(
-        `INSERT INTO cursos (codigo, nombre, descripcion, creditos, ciclo, tipo, docente_id, periodo_id, grado, seccion)
-         VALUES ($1,$2,$3,$4,$5,'Obligatorio',$6,$7,$8,$9)
+        `INSERT INTO cursos (codigo, nombre, descripcion, creditos, tipo, docente_id, periodo_id, grado, seccion)
+         VALUES ($1,$2,$3,$4,'Obligatorio',$5,$6,$7,$8)
          ON CONFLICT (codigo) DO UPDATE
            SET nombre     = EXCLUDED.nombre,
                docente_id = EXCLUDED.docente_id,
                grado      = EXCLUDED.grado,
                seccion    = EXCLUDED.seccion
          RETURNING id`,
-        [codigo, nombre, desc, m.horas, `${aula.grado}${aula.seccion}`, uid[m.docenteEmail], periodoId, aula.grado, aula.seccion]
+        [codigo, nombre, desc, m.horas, uid[m.docenteEmail], periodoId, aula.grado, aula.seccion]
       );
       const cursoId = cr.rows[0].id;
       totalCursos++;
