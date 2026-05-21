@@ -96,6 +96,8 @@ CREATE TABLE IF NOT EXISTS cursos (
 );
 
 ALTER TABLE cursos ADD COLUMN IF NOT EXISTS periodo_id UUID REFERENCES periodos_academicos(id);
+ALTER TABLE cursos ADD COLUMN IF NOT EXISTS grado    VARCHAR(10);
+ALTER TABLE cursos ADD COLUMN IF NOT EXISTS seccion  VARCHAR(5);
 
 CREATE INDEX IF NOT EXISTS idx_cursos_docente ON cursos(docente_id);
 CREATE INDEX IF NOT EXISTS idx_cursos_activo  ON cursos(activo);
@@ -589,7 +591,7 @@ CREATE TABLE IF NOT EXISTS configuracion_sistema (
 );
 
 INSERT INTO configuracion_sistema (clave, valor, descripcion, tipo, categoria) VALUES
-  ('nombre_institucion',  'Mi Universidad',   'Nombre de la institución',       'texto',    'general'),
+  ('nombre_institucion',  'I.E. N° 20456 "San Martín de Porres"', 'Nombre de la institución', 'texto', 'general'),
   ('logo_url',            '',                 'URL del logo institucional',     'texto',    'general'),
   ('color_primario',      '#1e3a5f',          'Color primario del sistema',     'color',    'apariencia'),
   ('color_secundario',    '#0ea5e9',          'Color secundario',               'color',    'apariencia'),

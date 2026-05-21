@@ -41,7 +41,7 @@ function AnioSection({ ciclo, index }) {
           </div>
           <div>
             <p className="font-semibold text-gray-900 dark:text-white">
-              {ciclo.ciclo ? `Año ${ciclo.ciclo}` : 'Sin año asignado'}
+              {ciclo.ciclo ?? 'Sin período asignado'}
             </p>
             <p className="text-sm text-gray-500">
               {ciclo.cursos.length} materia{ciclo.cursos.length !== 1 ? 's' : ''} · {aprobados} aprobada{aprobados !== 1 ? 's' : ''}

@@ -11,7 +11,7 @@ import { MOCK } from '../../api/mock';
 import { useRole } from '../../hooks/useRole';
 
 export default function AsistenciaPage() {
-  const { isEstudiante: isStudent, isDocente } = useRole();
+  const { isEstudiante: isStudent, isDocente, isAdmin } = useRole();
   const today = new Date().toISOString().split('T')[0];
 
   const [courses, setCourses]               = useState([]);
@@ -28,17 +28,17 @@ export default function AsistenciaPage() {
         setCourses(data.map(m => ({ id: m.curso_id, name: m.curso })));
       } else {
         const data = await fetchSafe(api.get('/cursos'), MOCK.cursos);
-        if (isDocente) {
-          // Si el docente no tiene cursos asignados aún, mostrar todos (backend incompleto)
+        if (isDocente && !isAdmin) {
           const myCourses = data.filter(c => c.docente_id != null);
           setCourses((myCourses.length > 0 ? myCourses : data).map(c => ({ id: c.id, name: c.name })));
         } else {
+          // Admin ve todos los cursos
           setCourses(data.map(c => ({ id: c.id, name: c.name })));
         }
       }
     };
     loadCourses();
-  }, [isStudent, isDocente]);
+  }, [isStudent, isDocente, isAdmin]);
 
   useEffect(() => {
     if (!selectedCourse) { setAlumnos([]); return; }
@@ -97,11 +97,13 @@ export default function AsistenciaPage() {
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
             <CalendarClock className="mr-3 text-secondary" size={28} />
-            {isStudent ? 'Mi Asistencia' : 'Toma de Asistencia'}
+            {isStudent ? 'Mi Asistencia' : isAdmin ? 'Supervisión de Asistencia' : 'Toma de Asistencia'}
           </h1>
           <p className="text-gray-500 mt-1">
             {isStudent
               ? 'Consulta tu historial de asistencia por curso y fecha.'
+              : isAdmin
+              ? 'Supervisa y edita la asistencia de todos los cursos.'
               : 'Registra la asistencia del día para el curso seleccionado.'}
           </p>
         </motion.div>

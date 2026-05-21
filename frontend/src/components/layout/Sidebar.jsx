@@ -14,8 +14,8 @@ import logo from '../../assets/logo.png';
 const NAV_ITEMS = [
   { path: '/dashboard',  label: 'Dashboard',         icon: LayoutDashboard },
   { path: '/usuarios',   label: 'Usuarios',           icon: Users,          roles: ['admin'] },
-  { path: '/cursos',     label: 'Cursos',             icon: BookOpen,       roles: ['admin', 'docente'] },
-  { path: '/matriculas', label: 'Matrículas',         icon: UserPlus,       roles: ['admin', 'estudiante'] },
+  { path: '/cursos',     label: 'Cursos',             icon: BookOpen,       roles: ['admin', 'docente', 'estudiante'] },
+  { path: '/matriculas', label: 'Matrículas',         icon: UserPlus,       roles: ['admin', 'docente', 'estudiante'], labelByRole: { estudiante: 'Mis Cursos' } },
   { path: '/notas',      label: 'Notas',              icon: GraduationCap },
   { path: '/asistencia', label: 'Asistencia',         icon: CheckSquare },
   { path: '/clases',     label: 'Clases Virtuales',   icon: Video },
@@ -36,7 +36,7 @@ const NAV_ITEMS = [
 ];
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
-  const { user, theme, toggleTheme, setUser } = useStore();
+  const { user, theme, toggleTheme, logout } = useStore();
   const navigate = useNavigate();
   const { role } = useRole();
 
@@ -45,8 +45,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   );
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
+    logout();
     navigate('/');
   };
 
@@ -98,7 +97,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             `}
           >
             <item.icon size={20} className="mr-3" />
-            {item.label}
+            {item.labelByRole?.[role] ?? item.label}
           </NavLink>
         ))}
       </nav>

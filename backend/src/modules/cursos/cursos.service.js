@@ -18,6 +18,8 @@ const format = (c) => ({
   description: c.descripcion,
   credits:     c.creditos,
   ciclo:       c.ciclo,
+  grado:       c.grado,
+  seccion:     c.seccion,
   type:        c.tipo,
   image:       c.imagen_url,
   students:    c.students_count ?? 0,
@@ -26,7 +28,7 @@ const format = (c) => ({
   activo:      c.activo,
 });
 
-const getAll = async ({ search, ciclo } = {}) => {
+const getAll = async ({ search, grado, ciclo } = {}) => {
   let query = BASE_SELECT + ' WHERE c.activo = true';
   const params = [];
 
@@ -35,12 +37,16 @@ const getAll = async ({ search, ciclo } = {}) => {
     const i = params.length;
     query += ` AND (c.nombre ILIKE $${i} OR c.codigo ILIKE $${i})`;
   }
+  if (grado && grado !== 'Todos') {
+    params.push(grado);
+    query += ` AND c.grado = $${params.length}`;
+  }
   if (ciclo && ciclo !== 'Todos') {
     params.push(ciclo);
     query += ` AND c.ciclo = $${params.length}`;
   }
 
-  query += ' ' + GROUP_BY + ' ORDER BY c.codigo ASC';
+  query += ' ' + GROUP_BY + ' ORDER BY c.grado ASC, c.seccion ASC, c.nombre ASC';
   const { rows } = await pool.query(query, params);
   return rows.map(format);
 };
@@ -51,18 +57,18 @@ const getById = async (id) => {
   return format(rows[0]);
 };
 
-const create = async ({ codigo, nombre, descripcion, creditos, ciclo, tipo, imagen_url, docente_id }) => {
+const create = async ({ codigo, nombre, descripcion, creditos, ciclo, grado, seccion, tipo, imagen_url, docente_id }) => {
   const { rows } = await pool.query(
-    `INSERT INTO cursos (codigo, nombre, descripcion, creditos, ciclo, tipo, imagen_url, docente_id)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`,
+    `INSERT INTO cursos (codigo, nombre, descripcion, creditos, ciclo, grado, seccion, tipo, imagen_url, docente_id)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id`,
     [codigo, nombre, descripcion || null, creditos || 3, ciclo || null,
-     tipo || 'Obligatorio', imagen_url || null, docente_id || null]
+     grado || null, seccion || null, tipo || 'Obligatorio', imagen_url || null, docente_id || null]
   );
   return getById(rows[0].id);
 };
 
 const update = async (id, data) => {
-  const allowed = ['codigo', 'nombre', 'descripcion', 'creditos', 'ciclo', 'tipo', 'imagen_url', 'docente_id', 'activo'];
+  const allowed = ['codigo', 'nombre', 'descripcion', 'creditos', 'ciclo', 'grado', 'seccion', 'tipo', 'imagen_url', 'docente_id', 'activo'];
   const fields = [];
   const params = [];
 

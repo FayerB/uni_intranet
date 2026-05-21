@@ -2,58 +2,66 @@
 // Cada clave corresponde a un endpoint del sistema.
 
 const cursos = [
-  { id: 1, code: 'CS101', name: 'Introducción a la Programación', description: 'Fundamentos de programación con Python.', credits: 4, ciclo: 'I', type: 'Obligatorio', students: 28, docente: 'Prof. García', image: null },
-  { id: 2, code: 'MAT201', name: 'Cálculo Diferencial',           description: 'Límites, derivadas e integrales.', credits: 4, ciclo: 'II', type: 'Obligatorio', students: 35, docente: 'Prof. López',  image: null },
-  { id: 3, code: 'ENG301', name: 'Inglés Técnico',                description: 'Inglés aplicado al entorno profesional.', credits: 2, ciclo: 'III', type: 'Electivo',    students: 20, docente: 'Prof. Smith',  image: null },
-  { id: 4, code: 'FIS102', name: 'Física General',                description: 'Mecánica, termodinámica y electromagnetismo.', credits: 4, ciclo: 'II', type: 'Obligatorio', students: 30, docente: 'Prof. Ramos',  image: null },
-  { id: 5, code: 'BD401',  name: 'Bases de Datos',                description: 'Diseño relacional, SQL y NoSQL.', credits: 3, ciclo: 'IV', type: 'Especialidad', students: 22, docente: 'Prof. Torres', image: null },
+  { id: 1, code: 'MAT-1A-2025', name: 'Matemática — 1° "A"',                               grado: '1°', seccion: 'A', description: 'Álgebra, geometría y aritmética para primer grado.',           credits: 6, ciclo: '1°A', type: 'Obligatorio', students: 28, docente: 'Prof. Torres',  image: null },
+  { id: 2, code: 'COM-1A-2025', name: 'Comunicación — 1° "A"',                              grado: '1°', seccion: 'A', description: 'Comprensión lectora, expresión oral y escrita.',              credits: 5, ciclo: '1°A', type: 'Obligatorio', students: 28, docente: 'Prof. Vargas',  image: null },
+  { id: 3, code: 'HGE-1A-2025', name: 'Historia, Geografía y Economía — 1° "A"',            grado: '1°', seccion: 'A', description: 'Historia del Perú, geografía y fundamentos económicos.',     credits: 3, ciclo: '1°A', type: 'Obligatorio', students: 28, docente: 'Prof. Quispe',  image: null },
+  { id: 4, code: 'CTA-1A-2025', name: 'Ciencia y Tecnología — 1° "A"',                      grado: '1°', seccion: 'A', description: 'Ciencias naturales, experimentos y tecnología aplicada.',    credits: 4, ciclo: '1°A', type: 'Obligatorio', students: 28, docente: 'Prof. Flores',  image: null },
+  { id: 5, code: 'ING-1A-2025', name: 'Inglés — 1° "A"',                                    grado: '1°', seccion: 'A', description: 'Inglés básico, vocabulario y comprensión auditiva.',         credits: 3, ciclo: '1°A', type: 'Obligatorio', students: 28, docente: 'Prof. Mendoza', image: null },
+  { id: 6, code: 'MAT-2A-2025', name: 'Matemática — 2° "A"',                               grado: '2°', seccion: 'A', description: 'Álgebra lineal, estadística y geometría analítica.',          credits: 6, ciclo: '2°A', type: 'Obligatorio', students: 25, docente: 'Prof. Torres',  image: null },
+  { id: 7, code: 'COM-2A-2025', name: 'Comunicación — 2° "A"',                              grado: '2°', seccion: 'A', description: 'Texto argumentativo, literatura peruana y redacción.',       credits: 5, ciclo: '2°A', type: 'Obligatorio', students: 25, docente: 'Prof. Vargas',  image: null },
+  { id: 8, code: 'HGE-2A-2025', name: 'Historia, Geografía y Economía — 2° "A"',            grado: '2°', seccion: 'A', description: 'Historia universal, geografía del Perú y economía básica.', credits: 3, ciclo: '2°A', type: 'Obligatorio', students: 25, docente: 'Prof. Quispe',  image: null },
 ];
 
 const matriculas = [
-  { id: 1, curso_id: 1, curso: 'Introducción a la Programación', codigo: 'CS101', creditos: 4, estado: 'activo',  estudiante: 'Demo Estudiante' },
-  { id: 2, curso_id: 2, curso: 'Cálculo Diferencial',            codigo: 'MAT201', creditos: 4, estado: 'activo',  estudiante: 'Demo Estudiante' },
-  { id: 3, curso_id: 3, curso: 'Inglés Técnico',                 codigo: 'ENG301', creditos: 2, estado: 'activo',  estudiante: 'Demo Estudiante' },
+  { id: 1, curso_id: 1, curso: 'Matemática — 1° "A"',                    codigo: 'MAT-1A-2025', creditos: 6, estado: 'activo', grado: '1°', seccion: 'A', estudiante: 'Demo Estudiante' },
+  { id: 2, curso_id: 2, curso: 'Comunicación — 1° "A"',                   codigo: 'COM-1A-2025', creditos: 5, estado: 'activo', grado: '1°', seccion: 'A', estudiante: 'Demo Estudiante' },
+  { id: 3, curso_id: 3, curso: 'Historia, Geografía y Economía — 1° "A"', codigo: 'HGE-1A-2025', creditos: 3, estado: 'activo', grado: '1°', seccion: 'A', estudiante: 'Demo Estudiante' },
+  { id: 4, curso_id: 4, curso: 'Ciencia y Tecnología — 1° "A"',           codigo: 'CTA-1A-2025', creditos: 4, estado: 'activo', grado: '1°', seccion: 'A', estudiante: 'Demo Estudiante' },
+  { id: 5, curso_id: 5, curso: 'Inglés — 1° "A"',                         codigo: 'ING-1A-2025', creditos: 3, estado: 'activo', grado: '1°', seccion: 'A', estudiante: 'Demo Estudiante' },
 ];
 
 const notas = [
-  { estudianteId: 1, name: 'Ana Torres',   p1: 16, p2: 15, ep: 17, ef: 18 },
-  { estudianteId: 2, name: 'Carlos Ruiz',  p1: 12, p2: 11, ep: 13, ef: 12 },
-  { estudianteId: 3, name: 'María Soto',   p1: 19, p2: 18, ep: 20, ef: 19 },
-  { estudianteId: 4, name: 'Luis Mendoza', p1: 8,  p2: 9,  ep: 8,  ef: 10 },
-  { estudianteId: 5, name: 'Sara Díaz',    p1: 15, p2: 16, ep: 14, ef: 17 },
+  { estudianteId: 1, name: 'Lucía Quispe Tapia',      p1: 16, p2: 15, ep: 17, ef: 18 },
+  { estudianteId: 2, name: 'Diego Huanca Flores',     p1: 12, p2: 11, ep: 13, ef: 12 },
+  { estudianteId: 3, name: 'Valeria Mamani Cruz',     p1: 19, p2: 18, ep: 20, ef: 19 },
+  { estudianteId: 4, name: 'Sebastián Torres Yupanqui', p1: 8, p2: 9, ep: 8, ef: 10 },
+  { estudianteId: 5, name: 'Camila Condori Apaza',    p1: 15, p2: 16, ep: 14, ef: 17 },
+  { estudianteId: 6, name: 'Aarón Layme Quispe',      p1: 14, p2: 13, ep: 15, ef: 16 },
 ];
 
 const asistencias = [
-  { estudianteId: 1, name: 'Ana Torres',   estado: 'presente' },
-  { estudianteId: 2, name: 'Carlos Ruiz',  estado: 'falta'    },
-  { estudianteId: 3, name: 'María Soto',   estado: 'presente' },
-  { estudianteId: 4, name: 'Luis Mendoza', estado: 'tardanza' },
-  { estudianteId: 5, name: 'Sara Díaz',    estado: 'presente' },
+  { estudianteId: 1, name: 'Lucía Quispe Tapia',        estado: 'presente' },
+  { estudianteId: 2, name: 'Diego Huanca Flores',       estado: 'falta'    },
+  { estudianteId: 3, name: 'Valeria Mamani Cruz',       estado: 'presente' },
+  { estudianteId: 4, name: 'Sebastián Torres Yupanqui', estado: 'tardanza' },
+  { estudianteId: 5, name: 'Camila Condori Apaza',      estado: 'presente' },
+  { estudianteId: 6, name: 'Aarón Layme Quispe',        estado: 'presente' },
 ];
 
 const dashboardStats = {
-  totalUsuarios: 128,
+  totalUsuarios: 33,
   usuariosPorRol: [
-    { rol: 'admin',      cantidad: 3   },
-    { rol: 'docente',    cantidad: 25  },
-    { rol: 'estudiante', cantidad: 100 },
+    { rol: 'admin',      cantidad: 1  },
+    { rol: 'docente',    cantidad: 8  },
+    { rol: 'estudiante', cantidad: 24 },
   ],
-  noticiasPublicadas: 14,
+  noticiasPublicadas: 3,
   chartData: [
-    { name: 'Nov', noticias: 4, usuarios: 12 },
-    { name: 'Dic', noticias: 6, usuarios: 20 },
-    { name: 'Ene', noticias: 3, usuarios: 15 },
-    { name: 'Feb', noticias: 8, usuarios: 30 },
-    { name: 'Mar', noticias: 5, usuarios: 22 },
-    { name: 'Abr', noticias: 9, usuarios: 28 },
+    { name: 'Mar', noticias: 2, usuarios: 5  },
+    { name: 'Abr', noticias: 3, usuarios: 10 },
+    { name: 'May', noticias: 4, usuarios: 8  },
+    { name: 'Jun', noticias: 3, usuarios: 6  },
+    { name: 'Jul', noticias: 5, usuarios: 9  },
+    { name: 'Ago', noticias: 2, usuarios: 7  },
   ],
 };
 
 const usuarios = [
-  { id: 1, name: 'Admin Demo',     initial: 'A', email: 'admin@uni.edu',     role: 'admin',      status: 'Activo' },
-  { id: 2, name: 'García Docente', initial: 'G', email: 'garcia@uni.edu',    role: 'docente',    status: 'Activo' },
-  { id: 3, name: 'Ana Torres',     initial: 'A', email: 'ana@uni.edu',       role: 'estudiante', status: 'Activo' },
-  { id: 4, name: 'Carlos Ruiz',    initial: 'C', email: 'carlos@uni.edu',    role: 'estudiante', status: 'Activo' },
+  { id: 1, name: 'Carlos Mendoza Ríos',     initial: 'C', email: 'director@ie20456.edu.pe',  role: 'admin',      status: 'Activo' },
+  { id: 2, name: 'Roberto Torres Salazar',  initial: 'R', email: 'r.torres@ie20456.edu.pe',  role: 'docente',    status: 'Activo' },
+  { id: 3, name: 'Ana Vargas Huamán',       initial: 'A', email: 'a.vargas@ie20456.edu.pe',  role: 'docente',    status: 'Activo' },
+  { id: 4, name: 'Lucía Quispe Tapia',      initial: 'L', email: 'lucia.qt@ie20456.edu.pe',  role: 'estudiante', status: 'Activo' },
+  { id: 5, name: 'Diego Huanca Flores',     initial: 'D', email: 'diego.hf@ie20456.edu.pe',  role: 'estudiante', status: 'Activo' },
 ];
 
 const notificaciones = [
@@ -74,25 +82,36 @@ const materiales = [
 ];
 
 const historialAcademico = {
-  resumen: { totalCreditos: 13, promedioPonderado: 14.1, ciclosCompletados: 2 },
+  resumen: { totalCreditos: 27, promedioPonderado: 14.8, ciclosCompletados: 2, grado: '1°', seccion: 'A' },
   ciclos: [
     {
-      ciclo: '2025-I',
-      promedio: 15.2,
-      creditosAprobados: 7,
+      ciclo: '1° Bimestre 2025',
+      promedio: 15.5,
+      creditosAprobados: 27,
       cursos: [
-        { nombre: 'Matemáticas Básicas', codigo: 'MAT101', creditos: 4, nota: 16, estado: 'Aprobado' },
-        { nombre: 'Comunicación',        codigo: 'COM101', creditos: 3, nota: 14, estado: 'Aprobado' },
+        { nombre: 'Matemática',                     codigo: 'MAT-1A-2025', creditos: 6, nota: 16, estado: 'Aprobado'    },
+        { nombre: 'Comunicación',                   codigo: 'COM-1A-2025', creditos: 5, nota: 15, estado: 'Aprobado'    },
+        { nombre: 'Historia, Geografía y Economía', codigo: 'HGE-1A-2025', creditos: 3, nota: 14, estado: 'Aprobado'    },
+        { nombre: 'Ciencia y Tecnología',           codigo: 'CTA-1A-2025', creditos: 4, nota: 17, estado: 'Aprobado'    },
+        { nombre: 'Inglés',                         codigo: 'ING-1A-2025', creditos: 3, nota: 13, estado: 'Aprobado'    },
+        { nombre: 'Educación Física',               codigo: 'EDF-1A-2025', creditos: 2, nota: 18, estado: 'Aprobado'    },
+        { nombre: 'Arte y Cultura',                 codigo: 'ART-1A-2025', creditos: 2, nota: 16, estado: 'Aprobado'    },
+        { nombre: 'DPCC',                           codigo: 'DPC-1A-2025', creditos: 2, nota: 14, estado: 'Aprobado'    },
       ],
     },
     {
-      ciclo: '2025-II',
-      promedio: 13.0,
-      creditosAprobados: 6,
+      ciclo: '2° Bimestre 2025',
+      promedio: 14.1,
+      creditosAprobados: 25,
       cursos: [
-        { nombre: 'Cálculo Diferencial', codigo: 'MAT201', creditos: 4, nota: 13, estado: 'Aprobado' },
-        { nombre: 'Física General',      codigo: 'FIS102', creditos: 4, nota: 9,  estado: 'Desaprobado' },
-        { nombre: 'Inglés Técnico',      codigo: 'ENG301', creditos: 2, nota: 17, estado: 'Aprobado' },
+        { nombre: 'Matemática',                     codigo: 'MAT-1A-2025', creditos: 6, nota: 14, estado: 'Aprobado'    },
+        { nombre: 'Comunicación',                   codigo: 'COM-1A-2025', creditos: 5, nota: 15, estado: 'Aprobado'    },
+        { nombre: 'Historia, Geografía y Economía', codigo: 'HGE-1A-2025', creditos: 3, nota: 13, estado: 'Aprobado'    },
+        { nombre: 'Ciencia y Tecnología',           codigo: 'CTA-1A-2025', creditos: 4, nota: 10, estado: 'Desaprobado' },
+        { nombre: 'Inglés',                         codigo: 'ING-1A-2025', creditos: 3, nota: 16, estado: 'Aprobado'    },
+        { nombre: 'Educación Física',               codigo: 'EDF-1A-2025', creditos: 2, nota: 17, estado: 'Aprobado'    },
+        { nombre: 'Arte y Cultura',                 codigo: 'ART-1A-2025', creditos: 2, nota: 15, estado: 'Aprobado'    },
+        { nombre: 'DPCC',                           codigo: 'DPC-1A-2025', creditos: 2, nota: 13, estado: 'Aprobado'    },
       ],
     },
   ],

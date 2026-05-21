@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: campus-virtual-backend
+    env: node
+    region: oregon
+    rootDir: .
+    buildCommand: npm install --production=false
+    startCommand: node server.js
+    healthCheckPath: /health
+    autoDeploy: true
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      # Puerto: Render lo asigna automáticamente — 
+      - key: PORT
+        value: 10000
+
+      # Base de datos PostgreSQL — configura en el dashboard de Render
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+
+      # JWT — genera un secreto seguro con: openssl rand -hex 32
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 8h
+
+      # CORS — pon la URL exacta de tu frontend en Vercel (sin barra final)
+      # Ejemplo: https://mi-intranet.vercel.app
+      - key: CORS_ORIGIN
+        sync: false
+
+      # Directorio de uploads (Render tiene disco efímero — considera Cloudinary para producción)
+      - key: UPLOAD_DIR
+        value: /tmp/uploads

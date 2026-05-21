@@ -36,8 +36,8 @@ function PrivateRoute() {
 
 const ROUTE_ROLES = {
   usuarios:   ['admin'],
-  cursos:     ['admin', 'docente'],
-  matriculas: ['admin', 'estudiante'],
+  cursos:     ['admin', 'docente', 'estudiante'],
+  matriculas: ['admin', 'docente', 'estudiante'],
   reportes:   ['admin'],
   historial:  ['estudiante', 'admin'],
   pagos:      ['admin'],

@@ -10,7 +10,7 @@ import { MOCK } from '../../api/mock';
 import { useRole } from '../../hooks/useRole';
 
 export default function NotasPage() {
-  const { isEstudiante: isStudent, isDocente } = useRole();
+  const { isEstudiante: isStudent, isDocente, isAdmin } = useRole();
 
   const [courses, setCourses]         = useState([]);
   const [selectedCourse, setSelectedCourse] = useState('');
@@ -25,17 +25,17 @@ export default function NotasPage() {
         setCourses(data.map(m => ({ id: m.curso_id, name: m.curso })));
       } else {
         const data = await fetchSafe(api.get('/cursos'), MOCK.cursos);
-        if (isDocente) {
-          // Si el docente no tiene cursos asignados aún, mostrar todos (backend incompleto)
+        if (isDocente && !isAdmin) {
           const myCourses = data.filter(c => c.docente_id != null);
           setCourses((myCourses.length > 0 ? myCourses : data).map(c => ({ id: c.id, name: c.name })));
         } else {
+          // Admin ve todos los cursos
           setCourses(data.map(c => ({ id: c.id, name: c.name })));
         }
       }
     };
     loadCourses();
-  }, [isStudent, isDocente]);
+  }, [isStudent, isDocente, isAdmin]);
 
   useEffect(() => {
     if (!selectedCourse) { setGrades([]); return; }
@@ -101,7 +101,9 @@ export default function NotasPage() {
             Registro de Notas
           </h1>
           <p className="text-gray-500 mt-1">
-            {isStudent ? 'Consulta tus notas bimestrales por curso.' : 'Registra las notas bimestrales de tus alumnos.'}
+            {isStudent ? 'Consulta tus notas bimestrales por curso.'
+            : isAdmin ? 'Supervisa y edita las notas de todos los cursos.'
+            : 'Registra las notas bimestrales de tus alumnos.'}
           </p>
         </motion.div>
 

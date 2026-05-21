@@ -1,96 +1,64 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ChevronRight, ChevronLeft, BookOpen, User, CreditCard } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { Check, BookOpen, Plus, Trash2, Search, UsersRound } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { Input } from '../../components/ui/Input';
 import { Table, TableHeader, TableRow, TableHead, TableCell } from '../../components/tables/Table';
 import Swal from 'sweetalert2';
 import api from '../../api';
 import { fetchSafe } from '../../api/fetchSafe';
 import { MOCK } from '../../api/mock';
 import { useRole } from '../../hooks/useRole';
-import { useStore } from '../../context/useStore';
 
-const STEPS = [
-  { id: 1, title: 'Datos Personales', icon: User },
-  { id: 2, title: 'Selección de Cursos', icon: BookOpen },
-  { id: 3, title: 'Confirmación', icon: CreditCard },
-];
+// ── Vista Admin ───────────────────────────────────────────────────────────────
+function AdminMatriculasView() {
+  const [students, setStudents]         = useState([]);
+  const [cursos, setCursos]             = useState([]);
+  const [matriculas, setMatriculas]     = useState([]);
+  const [selEstudiante, setSelEstudiante] = useState('');
+  const [selCurso, setSelCurso]         = useState('');
+  const [isSaving, setIsSaving]         = useState(false);
+  const [isLoading, setIsLoading]       = useState(true);
+  const [searchTerm, setSearchTerm]     = useState('');
+  const [gradoFilter, setGradoFilter]   = useState('Todos');
 
-export default function MatriculasPage() {
-  const { isAdmin } = useRole();
-  const { user } = useStore();
-
-  const [currentStep, setCurrentStep]       = useState(1);
-  const [cursos, setCursos]                 = useState([]);
-  const [misMatriculas, setMisMatriculas]   = useState([]);
-  const [selectedIds, setSelectedIds]       = useState([]);
-  const [isLoadingCursos, setIsLoadingCursos] = useState(false);
-  const [isLoadingMat, setIsLoadingMat]     = useState(false);
-  const [isSubmitting, setIsSubmitting]     = useState(false);
-
-  useEffect(() => {
-    setIsLoadingCursos(true);
-    fetchSafe(api.get('/cursos'), MOCK.cursos)
-      .then(setCursos)
-      .finally(() => setIsLoadingCursos(false));
-
-    setIsLoadingMat(true);
-    fetchSafe(api.get('/matriculas'), MOCK.matriculas)
-      .then(setMisMatriculas)
-      .finally(() => setIsLoadingMat(false));
+  const loadAll = useCallback(async () => {
+    setIsLoading(true);
+    const [studentsRes, cursosRes, matRes] = await Promise.all([
+      fetchSafe(api.get('/usuarios?role=estudiante'), []),
+      fetchSafe(api.get('/cursos'), MOCK.cursos),
+      fetchSafe(api.get('/matriculas'), MOCK.matriculas),
+    ]);
+    setStudents(studentsRes);
+    setCursos(cursosRes);
+    setMatriculas(matRes);
+    setIsLoading(false);
   }, []);
 
-  const enrolledCursoIds = new Set(misMatriculas.map((m) => m.curso_id));
+  useEffect(() => { loadAll(); }, [loadAll]);
 
-  const toggleCurso = (id) => {
-    if (enrolledCursoIds.has(id)) return; // ya matriculado
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
-  };
-
-  const selectedCursos = cursos.filter((c) => selectedIds.includes(c.id));
-  const totalCredits   = selectedCursos.reduce((acc, c) => acc + c.credits, 0);
-
-  const handleNext = () => {
-    if (currentStep === 2 && selectedIds.length === 0) {
-      Swal.fire({ icon: 'info', title: 'Selecciona al menos un curso', confirmButtonColor: '#1e3a8a' });
+  const handleEnroll = async () => {
+    if (!selEstudiante || !selCurso) {
+      Swal.fire({ icon: 'warning', title: 'Selecciona estudiante y curso', confirmButtonColor: '#1e3a8a' });
       return;
     }
-    if (currentStep < 3) setCurrentStep((s) => s + 1);
-  };
-
-  const handleConfirm = async () => {
-    setIsSubmitting(true);
+    setIsSaving(true);
     try {
-      const res = await api.post('/matriculas', { curso_ids: selectedIds });
-      const { enrolled, results } = res.data;
-      const failed = results.filter((r) => !r.success);
-
-      Swal.fire({
-        icon: enrolled > 0 ? 'success' : 'warning',
-        title: enrolled > 0 ? '¡Matrícula Exitosa!' : 'Sin cambios',
-        html: enrolled > 0
-          ? `Te matriculaste en <b>${enrolled}</b> curso(s) — <b>${totalCredits}</b> créditos.`
-            + (failed.length > 0 ? `<br/><small>${failed.length} ya estaban registrados.</small>` : '')
-          : 'Todos los cursos ya estaban registrados.',
-        confirmButtonColor: '#1e3a8a',
-        customClass: { popup: 'rounded-2xl' },
-      }).then(() => {
-        setCurrentStep(1);
-        setSelectedIds([]);
-        fetchSafe(api.get('/matriculas'), MOCK.matriculas).then(setMisMatriculas);
-      });
+      await api.post('/matriculas', { curso_ids: [selCurso], estudiante_id: selEstudiante });
+      Swal.fire({ icon: 'success', title: 'Matrícula registrada', showConfirmButton: false, timer: 1500 });
+      setSelEstudiante('');
+      setSelCurso('');
+      loadAll();
     } catch (err) {
-      Swal.fire({ icon: 'error', title: 'Error', text: err.response?.data?.message || 'No se pudo completar la matrícula.', confirmButtonColor: '#1e3a8a' });
+      Swal.fire({ icon: 'error', title: 'Error', text: err.response?.data?.message || 'No se pudo matricular.', confirmButtonColor: '#1e3a8a' });
     } finally {
-      setIsSubmitting(false);
+      setIsSaving(false);
     }
   };
 
-  const handleRemove = (matriculaId) => {
+  const handleRemove = (id) => {
     Swal.fire({
       title: '¿Anular matrícula?',
       icon: 'warning',
@@ -99,11 +67,11 @@ export default function MatriculasPage() {
       cancelButtonColor: '#6b7280',
       confirmButtonText: 'Sí, anular',
       cancelButtonText: 'Cancelar',
-    }).then(async (result) => {
-      if (!result.isConfirmed) return;
+    }).then(async ({ isConfirmed }) => {
+      if (!isConfirmed) return;
       try {
-        await api.delete(`/matriculas/${matriculaId}`);
-        setMisMatriculas((prev) => prev.filter((m) => m.id !== matriculaId));
+        await api.delete(`/matriculas/${id}`);
+        setMatriculas((prev) => prev.filter((m) => m.id !== id));
         Swal.fire({ icon: 'success', title: 'Matrícula anulada', showConfirmButton: false, timer: 1500 });
       } catch (err) {
         Swal.fire({ icon: 'error', title: 'Error', text: err.response?.data?.message || 'Error al anular.', confirmButtonColor: '#1e3a8a' });
@@ -111,200 +79,279 @@ export default function MatriculasPage() {
     });
   };
 
+  const filtered = matriculas.filter((m) => {
+    const matchSearch = !searchTerm ||
+      m.estudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      m.curso?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchGrado = gradoFilter === 'Todos' || m.codigo?.includes(`-${gradoFilter.replace('°', '')}`);
+    return matchSearch && matchGrado;
+  });
+
+  const gradoOptions = ['Todos', '1°', '2°', '3°', '4°', '5°'];
+
   return (
-    <div className="space-y-8 max-w-4xl mx-auto">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Proceso de Matrícula</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">Ciclo Académico 2026-I</p>
-      </div>
+    <div className="space-y-6">
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+          <UsersRound className="text-primary" size={28} />
+          Gestión de Matrículas
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Registra, consulta y anula matrículas de estudiantes.</p>
+      </motion.div>
 
-      {/* Stepper */}
-      <div className="relative">
-        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 dark:bg-gray-700 -translate-y-1/2 z-0 rounded-full" />
-        <div className="absolute top-1/2 left-0 h-1 bg-primary -translate-y-1/2 z-0 rounded-full transition-all duration-500"
-          style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }} />
-        <div className="relative z-10 flex justify-between">
-          {STEPS.map((step) => {
-            const done = currentStep > step.id;
-            const active = currentStep === step.id;
-            return (
-              <div key={step.id} className="flex flex-col items-center">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm
-                  ${done ? 'bg-primary text-white scale-95' : active ? 'bg-primary border-4 border-white dark:border-gray-900 text-white scale-110 shadow-lg' : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-400'}`}>
-                  {done ? <Check size={20} /> : <step.icon size={20} />}
-                </div>
-                <span className={`mt-3 text-sm font-medium transition-colors ${active ? 'text-primary' : 'text-gray-500 dark:text-gray-400'}`}>{step.title}</span>
+      {/* Formulario nueva matrícula */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Plus size={20} className="text-primary" /> Nueva Matrícula
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Estudiante</label>
+                <select
+                  value={selEstudiante}
+                  onChange={(e) => setSelEstudiante(e.target.value)}
+                  className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">-- Seleccionar estudiante --</option>
+                  {students.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.nombre} {s.apellido}
+                    </option>
+                  ))}
+                </select>
               </div>
-            );
-          })}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Curso</label>
+                <select
+                  value={selCurso}
+                  onChange={(e) => setSelCurso(e.target.value)}
+                  className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">-- Seleccionar curso --</option>
+                  {cursos.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name} {c.grado ? `(${c.grado}"${c.seccion}")` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-end">
+                <Button className="w-full" onClick={handleEnroll} isLoading={isSaving}>
+                  <Plus size={16} className="mr-2" /> Matricular
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Filtros tabla */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+        className="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col md:flex-row gap-4"
+      >
+        <div className="flex-1">
+          <Input placeholder="Buscar por estudiante o curso..." icon={Search} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         </div>
-      </div>
-
-      {/* Contenido del wizard */}
-      <Card className="min-h-[400px] flex flex-col">
-        <CardContent className="flex-1 p-8">
-          <AnimatePresence mode="wait">
-            {/* Step 1: Datos personales */}
-            {currentStep === 1 && (
-              <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-                className="space-y-6 max-w-xl mx-auto"
-              >
-                <div className="text-center mb-8">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Verifica tus datos</h2>
-                  <p className="text-gray-500 text-sm mt-1">Asegúrate de que tu información esté actualizada.</p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre</label>
-                    <input disabled value={user?.name?.split(' ')[0] || ''} className="w-full bg-gray-100 dark:bg-gray-700/50 border border-transparent rounded-xl px-4 py-3 text-gray-500 cursor-not-allowed" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Apellido</label>
-                    <input disabled value={user?.name?.split(' ').slice(1).join(' ') || ''} className="w-full bg-gray-100 dark:bg-gray-700/50 border border-transparent rounded-xl px-4 py-3 text-gray-500 cursor-not-allowed" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Correo</label>
-                    <input disabled value={user?.email || ''} className="w-full bg-gray-100 dark:bg-gray-700/50 border border-transparent rounded-xl px-4 py-3 text-gray-500 cursor-not-allowed" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rol</label>
-                    <input disabled value={user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ''} className="w-full bg-gray-100 dark:bg-gray-700/50 border border-transparent rounded-xl px-4 py-3 text-gray-500 cursor-not-allowed" />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 2: Selección de cursos */}
-            {currentStep === 2 && (
-              <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Selecciona tus cursos</h2>
-                  <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-semibold">
-                    Créditos: {totalCredits}
-                  </span>
-                </div>
-                {isLoadingCursos ? (
-                  <div className="text-center py-8 text-gray-400">Cargando cursos disponibles...</div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {cursos.map((curso) => {
-                      const isEnrolled = enrolledCursoIds.has(curso.id);
-                      const isSelected = selectedIds.includes(curso.id);
-                      return (
-                        <div key={curso.id} onClick={() => toggleCurso(curso.id)}
-                          className={`p-4 rounded-2xl border-2 transition-all duration-200 flex items-center justify-between
-                            ${isEnrolled ? 'border-success/40 bg-success/5 cursor-not-allowed opacity-70'
-                              : isSelected ? 'border-primary bg-primary/5 dark:bg-primary/10 cursor-pointer'
-                              : 'border-gray-100 dark:border-gray-700 hover:border-primary/50 cursor-pointer'}`}
-                        >
-                          <div>
-                            <div className="font-bold text-gray-900 dark:text-white">{curso.name}</div>
-                            <div className="text-sm text-gray-500">{curso.code} • {curso.credits} cr.</div>
-                            {isEnrolled && <div className="text-xs text-success font-medium mt-1">Ya matriculado</div>}
-                          </div>
-                          <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors
-                            ${isEnrolled ? 'bg-success text-white' : isSelected ? 'bg-primary text-white' : 'border-2 border-gray-300 dark:border-gray-600'}`}>
-                            {(isEnrolled || isSelected) && <Check size={14} />}
-                          </div>
-                        </div>
-                      );
-                    })}
-                    {cursos.length === 0 && <div className="col-span-2 text-center py-8 text-gray-400">No hay cursos disponibles.</div>}
-                  </div>
-                )}
-              </motion.div>
-            )}
-
-            {/* Step 3: Confirmación */}
-            {currentStep === 3 && (
-              <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="max-w-2xl mx-auto">
-                <div className="text-center mb-8">
-                  <div className="w-16 h-16 bg-success/10 text-success rounded-full flex items-center justify-center mx-auto mb-4"><Check size={32} /></div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Resumen de Matrícula</h2>
-                  <p className="text-gray-500 mt-1">Revisa que todo esté correcto antes de confirmar.</p>
-                </div>
-                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-6 border border-gray-100 dark:border-gray-700">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Cursos Seleccionados</h3>
-                  {selectedCursos.length === 0
-                    ? <p className="text-gray-500 italic text-center py-4">No has seleccionado ningún curso.</p>
-                    : (
-                      <div className="space-y-3">
-                        {selectedCursos.map((c) => (
-                          <div key={c.id} className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700 last:border-0">
-                            <span className="font-medium text-gray-700 dark:text-gray-300">{c.code} — {c.name}</span>
-                            <span className="text-gray-500">{c.credits} cr.</span>
-                          </div>
-                        ))}
-                        <div className="flex justify-between items-center pt-4 font-bold text-lg">
-                          <span className="text-gray-900 dark:text-white">Total Créditos</span>
-                          <span className="text-primary">{totalCredits}</span>
-                        </div>
-                      </div>
-                    )
-                  }
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </CardContent>
-
-        <div className="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-between bg-gray-50/50 dark:bg-gray-800/50 rounded-b-2xl">
-          <Button variant="outline" onClick={() => setCurrentStep((s) => s - 1)} disabled={currentStep === 1}>
-            <ChevronLeft size={18} className="mr-2" /> Anterior
-          </Button>
-          {currentStep < 3
-            ? <Button onClick={handleNext}>Siguiente <ChevronRight size={18} className="ml-2" /></Button>
-            : <Button onClick={handleConfirm} disabled={selectedCursos.length === 0} isLoading={isSubmitting}>
-                Confirmar Matrícula <Check size={18} className="ml-2" />
-              </Button>
-          }
+        <select
+          value={gradoFilter}
+          onChange={(e) => setGradoFilter(e.target.value)}
+          className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm focus:ring-primary w-full md:w-44"
+        >
+          {gradoOptions.map((g) => <option key={g} value={g}>{g === 'Todos' ? 'Todos los grados' : `${g} Grado`}</option>)}
+        </select>
+        <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-xl">
+          <span className="text-sm font-semibold text-primary">{filtered.length}</span>
+          <span className="text-xs text-gray-500">matrículas</span>
         </div>
-      </Card>
+      </motion.div>
 
-      {/* Mis matrículas actuales */}
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-          {isAdmin ? 'Todas las Matrículas' : 'Mis Matrículas'}
-        </h2>
-        {isLoadingMat ? (
-          <div className="text-center py-8 text-gray-400">Cargando matrículas...</div>
-        ) : misMatriculas.length === 0 ? (
-          <div className="text-center py-8 text-gray-400">No hay matrículas registradas.</div>
+      {/* Tabla */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+        {isLoading ? (
+          <div className="text-center py-16 text-gray-400">Cargando matrículas...</div>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                {isAdmin && <TableHead>Estudiante</TableHead>}
+                <TableHead>Estudiante</TableHead>
                 <TableHead>Curso</TableHead>
                 <TableHead>Código</TableHead>
-                <TableHead>Créditos</TableHead>
                 <TableHead>Estado</TableHead>
-                {isAdmin && <TableHead className="text-right">Acciones</TableHead>}
+                <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <tbody>
-              {misMatriculas.map((m) => (
-                <TableRow key={m.id}>
-                  {isAdmin && <TableCell className="font-medium">{m.estudiante}</TableCell>}
-                  <TableCell className="font-semibold text-gray-900 dark:text-white">{m.curso}</TableCell>
-                  <TableCell className="text-primary font-medium">{m.codigo}</TableCell>
-                  <TableCell>{m.creditos} cr.</TableCell>
-                  <TableCell>
-                    <Badge variant={m.estado === 'activo' ? 'success' : 'gray'}>
-                      {m.estado.charAt(0).toUpperCase() + m.estado.slice(1)}
-                    </Badge>
-                  </TableCell>
-                  {isAdmin && (
-                    <TableCell className="text-right">
-                      <button onClick={() => handleRemove(m.id)} className="text-xs text-destructive hover:underline font-medium">Anular</button>
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-10 text-gray-400">No se encontraron matrículas.</td>
+                </tr>
+              ) : (
+                filtered.map((m, i) => (
+                  <motion.tr key={m.id}
+                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
+                    className="border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-750 transition-colors"
+                  >
+                    <TableCell className="font-medium text-gray-900 dark:text-white">{m.estudiante}</TableCell>
+                    <TableCell>{m.curso}</TableCell>
+                    <TableCell className="font-mono text-xs text-primary">{m.codigo}</TableCell>
+                    <TableCell>
+                      <Badge variant={m.estado === 'activo' ? 'success' : 'gray'}>
+                        {m.estado.charAt(0).toUpperCase() + m.estado.slice(1)}
+                      </Badge>
                     </TableCell>
-                  )}
-                </TableRow>
-              ))}
+                    <TableCell className="text-right">
+                      <button onClick={() => handleRemove(m.id)}
+                        className="p-2 text-gray-400 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors">
+                        <Trash2 size={16} />
+                      </button>
+                    </TableCell>
+                  </motion.tr>
+                ))
+              )}
             </tbody>
           </Table>
         )}
-      </div>
+      </motion.div>
     </div>
   );
+}
+
+// ── Vista Estudiante: solo lectura ────────────────────────────────────────────
+function EstudianteMatriculasView() {
+  const [misMatriculas, setMisMatriculas] = useState([]);
+  const [isLoading, setIsLoading]         = useState(true);
+
+  useEffect(() => {
+    fetchSafe(api.get('/matriculas'), MOCK.matriculas)
+      .then(setMisMatriculas)
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  const totalHoras = misMatriculas.reduce((acc, m) => acc + (m.creditos ?? 0), 0);
+
+  return (
+    <div className="space-y-6">
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+          <BookOpen className="text-primary" size={28} />
+          Mis Cursos
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">
+          Cursos asignados por la Secretaría Académica para el Año Escolar 2025.
+        </p>
+      </motion.div>
+
+      {isLoading ? (
+        <div className="text-center py-16 text-gray-400">Cargando tus cursos...</div>
+      ) : misMatriculas.length === 0 ? (
+        <Card>
+          <CardContent className="py-16 text-center text-gray-400">
+            <BookOpen size={40} className="mx-auto mb-3 opacity-30" />
+            <p>Aún no tienes cursos asignados.</p>
+            <p className="text-sm mt-1">Comunícate con la Secretaría Académica.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          {/* Resumen */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+            className="grid grid-cols-2 sm:grid-cols-3 gap-4"
+          >
+            <Card>
+              <CardContent className="p-5 flex items-center gap-3">
+                <div className="p-3 bg-primary/10 rounded-xl">
+                  <BookOpen size={20} className="text-primary" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{misMatriculas.length}</p>
+                  <p className="text-xs text-gray-500">Cursos asignados</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-5 flex items-center gap-3">
+                <div className="p-3 bg-secondary/10 rounded-xl">
+                  <Check size={20} className="text-secondary" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalHoras}</p>
+                  <p className="text-xs text-gray-500">Horas semanales</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-5 flex items-center gap-3">
+                <div className="p-3 bg-success/10 rounded-xl">
+                  <UsersRound size={20} className="text-success" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {misMatriculas.filter(m => m.estado === 'activo').length}
+                  </p>
+                  <p className="text-xs text-gray-500">Activos</p>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Tabla */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Área Curricular</TableHead>
+                  <TableHead>Código</TableHead>
+                  <TableHead>Hrs/sem.</TableHead>
+                  <TableHead>Estado</TableHead>
+                </TableRow>
+              </TableHeader>
+              <tbody>
+                {misMatriculas.map((m, i) => (
+                  <motion.tr key={m.id}
+                    initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.04 }}
+                    className="border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-750"
+                  >
+                    <TableCell className="font-semibold text-gray-900 dark:text-white">{m.curso}</TableCell>
+                    <TableCell className="font-mono text-xs text-primary">{m.codigo}</TableCell>
+                    <TableCell className="text-gray-500">{m.creditos ?? '—'}</TableCell>
+                    <TableCell>
+                      <Badge variant={m.estado === 'activo' ? 'success' : 'gray'}>
+                        {m.estado === 'activo' ? 'Activo' : 'Inactivo'}
+                      </Badge>
+                    </TableCell>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </Table>
+          </motion.div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ── Docente: vista informativa ─────────────────────────────────────────────────
+function DocenteMatriculasView() {
+  return (
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
+        <BookOpen size={40} className="text-primary" />
+      </div>
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Matrículas de tus cursos</h2>
+      <p className="text-gray-500 max-w-sm">
+        Los estudiantes matriculados en tus cursos aparecen automáticamente en las secciones de <strong>Notas</strong> y <strong>Asistencia</strong>.
+      </p>
+    </div>
+  );
+}
+
+// ── Router por rol ─────────────────────────────────────────────────────────────
+export default function MatriculasPage() {
+  const { isAdmin, isDocente } = useRole();
+
+  if (isAdmin)   return <AdminMatriculasView />;
+  if (isDocente) return <DocenteMatriculasView />;
+  return <EstudianteMatriculasView />;
 }

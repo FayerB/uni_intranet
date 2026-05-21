@@ -14,8 +14,9 @@ import { fetchSafe } from '../../api/fetchSafe';
 import { MOCK } from '../../api/mock';
 import { useRole } from '../../hooks/useRole';
 
-const TIPOS = ['Obligatorio', 'Electivo', 'Especialidad'];
-const CICLOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+const TIPOS  = ['Obligatorio', 'Electivo'];
+const GRADOS = ['1°', '2°', '3°', '4°', '5°'];
+const SECCIONES = ['A', 'B', 'C', 'D'];
 
 const typeBadge = (t) => t === 'Obligatorio' ? 'primary' : t === 'Electivo' ? 'warning' : 'secondary';
 
@@ -28,7 +29,7 @@ export default function CursosPage() {
   const [isLoading, setIsLoading]     = useState(true);
   const [viewMode, setViewMode]       = useState('grid');
   const [searchTerm, setSearchTerm]   = useState('');
-  const [cicloFilter, setCicloFilter] = useState('Todos');
+  const [gradoFilter, setGradoFilter] = useState('Todos');
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [isFormOpen, setIsFormOpen]   = useState(false);
   const [editingCurso, setEditingCurso] = useState(null);
@@ -40,19 +41,19 @@ export default function CursosPage() {
     setIsLoading(true);
     const params = {};
     if (searchTerm) params.search = searchTerm;
-    if (cicloFilter !== 'Todos') params.ciclo = cicloFilter;
+    if (gradoFilter !== 'Todos') params.grado = gradoFilter;
     const data = await fetchSafe(api.get('/cursos', { params }), MOCK.cursos);
     setCursos(data);
     setIsLoading(false);
-  }, [searchTerm, cicloFilter]);
+  }, [searchTerm, gradoFilter]);
 
   useEffect(() => { fetchCursos(); }, [fetchCursos]);
 
   const openForm = (curso = null) => {
     setEditingCurso(curso);
     reset(curso
-      ? { codigo: curso.code, nombre: curso.name, descripcion: curso.description, creditos: curso.credits, ciclo: curso.ciclo, tipo: curso.type, imagen_url: curso.image || '' }
-      : { codigo: '', nombre: '', descripcion: '', creditos: 3, ciclo: 'I', tipo: 'Obligatorio', imagen_url: '' }
+      ? { codigo: curso.code, nombre: curso.name, descripcion: curso.description, creditos: curso.credits, grado: curso.grado || '', seccion: curso.seccion || '', tipo: curso.type, imagen_url: curso.image || '' }
+      : { codigo: '', nombre: '', descripcion: '', creditos: 4, grado: '1°', seccion: 'A', tipo: 'Obligatorio', imagen_url: '' }
     );
     setIsFormOpen(true);
   };
@@ -103,7 +104,7 @@ export default function CursosPage() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Cursos</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Explora y gestiona los cursos académicos.</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Áreas curriculares por grado y sección.</p>
         </motion.div>
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex gap-2">
           {canWrite && (
@@ -127,10 +128,10 @@ export default function CursosPage() {
         </div>
         <select
           className="appearance-none bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary w-full md:w-48"
-          value={cicloFilter} onChange={(e) => setCicloFilter(e.target.value)}
+          value={gradoFilter} onChange={(e) => setGradoFilter(e.target.value)}
         >
-          <option value="Todos">Todos los ciclos</option>
-          {CICLOS.map((c) => <option key={c} value={c}>Ciclo {c}</option>)}
+          <option value="Todos">Todos los grados</option>
+          {GRADOS.map((g) => <option key={g} value={g}>{g} Grado</option>)}
         </select>
       </motion.div>
 
@@ -170,8 +171,13 @@ export default function CursosPage() {
                       <div className="text-xs font-semibold text-primary mb-2">{curso.code}</div>
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 line-clamp-2">{curso.name}</h3>
                       <div className="mt-auto space-y-3 pb-4 border-b border-gray-100 dark:border-gray-700">
-                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400"><BookOpen size={16} className="mr-2" />{curso.credits} Créditos</div>
-                        {curso.ciclo && <div className="flex items-center text-sm text-gray-500 dark:text-gray-400"><Clock size={16} className="mr-2" />Ciclo {curso.ciclo}</div>}
+                        {(curso.grado || curso.seccion) && (
+                          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                            <Clock size={16} className="mr-2" />
+                            {curso.grado} Grado{curso.seccion ? ` — Sección "${curso.seccion}"` : ''}
+                          </div>
+                        )}
+                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400"><BookOpen size={16} className="mr-2" />{curso.credits} hrs/sem.</div>
                         <div className="flex items-center text-sm text-gray-500 dark:text-gray-400"><Users size={16} className="mr-2" />{curso.students} Estudiantes</div>
                       </div>
                       <button onClick={() => setSelectedCourse(curso)} className="mt-4 flex items-center justify-between text-sm font-medium text-primary hover:text-primary-600 transition-colors w-full">
@@ -189,9 +195,9 @@ export default function CursosPage() {
                   <TableRow>
                     <TableHead>Código</TableHead>
                     <TableHead>Curso</TableHead>
-                    <TableHead>Ciclo</TableHead>
+                    <TableHead>Grado / Sección</TableHead>
                     <TableHead>Tipo</TableHead>
-                    <TableHead>Créditos</TableHead>
+                    <TableHead>Hrs/sem.</TableHead>
                     <TableHead className="text-right">Alumnos</TableHead>
                     {(canWrite || canDelete) && <TableHead className="text-right">Acciones</TableHead>}
                   </TableRow>
@@ -203,7 +209,7 @@ export default function CursosPage() {
                     >
                       <TableCell className="font-medium text-primary">{curso.code}</TableCell>
                       <TableCell><span className="font-semibold text-gray-900 dark:text-white">{curso.name}</span></TableCell>
-                      <TableCell>{curso.ciclo ? `Ciclo ${curso.ciclo}` : '—'}</TableCell>
+                      <TableCell>{curso.grado ? `${curso.grado} "${curso.seccion}"` : '—'}</TableCell>
                       <TableCell><Badge variant={typeBadge(curso.type)}>{curso.type}</Badge></TableCell>
                       <TableCell>{curso.credits}</TableCell>
                       <TableCell className="text-right font-medium">{curso.students}</TableCell>
@@ -249,14 +255,16 @@ export default function CursosPage() {
               <div className="p-6 overflow-y-auto space-y-6">
                 <div className="grid grid-cols-3 gap-4">
                   <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-2xl flex flex-col items-center">
-                    <BookOpen className="text-primary mb-2" size={24} />
-                    <span className="text-sm text-gray-500">Créditos</span>
-                    <span className="font-bold text-gray-900 dark:text-white">{selectedCourse.credits} pts</span>
+                    <Clock className="text-secondary mb-2" size={24} />
+                    <span className="text-sm text-gray-500 text-center">Grado</span>
+                    <span className="font-bold text-gray-900 dark:text-white text-center">
+                      {selectedCourse.grado ? `${selectedCourse.grado} "${selectedCourse.seccion}"` : '—'}
+                    </span>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-2xl flex flex-col items-center">
-                    <Clock className="text-secondary mb-2" size={24} />
-                    <span className="text-sm text-gray-500">Ciclo</span>
-                    <span className="font-bold text-gray-900 dark:text-white">{selectedCourse.ciclo || '—'}</span>
+                    <BookOpen className="text-primary mb-2" size={24} />
+                    <span className="text-sm text-gray-500">Hrs/sem.</span>
+                    <span className="font-bold text-gray-900 dark:text-white">{selectedCourse.credits}</span>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-2xl flex flex-col items-center">
                     <Users className="text-success mb-2" size={24} />
@@ -310,16 +318,22 @@ export default function CursosPage() {
             <label className="text-sm font-medium mb-1 block">Descripción</label>
             <textarea {...register('descripcion')} rows={2} placeholder="Descripción del curso..." className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none" />
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-4 gap-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">Créditos</label>
-              <Input {...register('creditos', { valueAsNumber: true })} type="number" min={1} max={10} />
+              <label className="text-sm font-medium mb-1 block">Grado</label>
+              <select {...register('grado')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-primary">
+                {GRADOS.map((g) => <option key={g} value={g}>{g}</option>)}
+              </select>
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">Ciclo</label>
-              <select {...register('ciclo')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-primary">
-                {CICLOS.map((c) => <option key={c} value={c}>Ciclo {c}</option>)}
+              <label className="text-sm font-medium mb-1 block">Sección</label>
+              <select {...register('seccion')} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-primary">
+                {SECCIONES.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Hrs/sem.</label>
+              <Input {...register('creditos', { valueAsNumber: true })} type="number" min={1} max={10} />
             </div>
             <div>
               <label className="text-sm font-medium mb-1 block">Tipo</label>
